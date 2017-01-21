@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.Victor;
 public class DriveBase {
 	
 	private final double WHEEL_CIRCUMFERENCE = 1;
-	private final double PULSES_PER_REVOLUTION = 1;
 	
 	private Victor leftVictor;
 	private Victor rightVictor;
@@ -20,10 +19,6 @@ public class DriveBase {
 		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
 		
 		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
-		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
-		
-		leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
-		rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
 		
 	}
 	
@@ -41,11 +36,11 @@ public class DriveBase {
 	}
 	
 	public double getRightWheelDistance () {
-		return rightEncoder.getDistance();
+		return rightEncoder.get() * WHEEL_CIRCUMFERENCE;
 	}
 	
 	public double getLeftWheelDistance (){
-		return leftEncoder.getDistance();
+		return leftEncoder.get() * WHEEL_CIRCUMFERENCE;
 	}
 	
 }
