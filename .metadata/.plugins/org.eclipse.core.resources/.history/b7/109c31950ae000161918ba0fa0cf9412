@@ -1,6 +1,5 @@
 package org.usfirst.frc.team131.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,18 +20,13 @@ public class Robot extends IterativeRobot {
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
-	Compressor compressor;
 
-	boolean compressorIsManuallyStopped;
-	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-		compressorIsManuallyStopped = false;
-		compressor = new Compressor();
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
@@ -41,7 +35,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", chooser);
 		drive.resetEncoders();
 	}
-	
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
@@ -67,16 +60,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		if (compressor.enabled()) {
-			if (climber.isClimbing() || compressorIsManuallyStopped) {
-				compressor.stop();	
-			}
-		} else {
-			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-				compressor.start();
-			}
-		}
-		
 		switch (autoSelected) {
 		case customAuto:
 			// Put custom auto code here
@@ -94,38 +77,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		
-		if (CO.operator.buttonPressed(CO.operator.START_BUTTON)) {
-			if (compressorIsManuallyStopped) {
-				compressorIsManuallyStopped = false;
-			} else {
-				compressorIsManuallyStopped = true;
-			}
-		}
-		
-		//controls the direction of the climber
-		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
-			climber.setClimberSpeed(1.0);
-		} else if (CO.operator.buttonPressed(CO.operator.LEFT_BUMPER)) {
-			climber.setClimberSpeed(-1.0);
-		} else {
-			climber.setClimberSpeed(0.0);
-		}
-		
 		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
 		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
 		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
-		
-		if (compressor.enabled()) {
-			if (climber.isClimbing() || compressorIsManuallyStopped) {
-				compressor.stop();	
-			}
-		} else {
-			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-				compressor.start();
-			}
-		}
-		
 	}
 
 	/**
@@ -133,7 +88,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		
 	}
 }
 

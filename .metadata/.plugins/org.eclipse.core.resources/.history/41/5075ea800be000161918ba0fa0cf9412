@@ -102,7 +102,6 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		
-		//controls the direction of the climber
 		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
 			climber.setClimberSpeed(1.0);
 		} else if (CO.operator.buttonPressed(CO.operator.LEFT_BUMPER)) {
