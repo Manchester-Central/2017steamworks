@@ -21,8 +21,11 @@ public class Robot extends IterativeRobot {
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
+<<<<<<< HEAD
 	Compressor compressor;
+=======
 	GearFlopper gearFlopper;
+>>>>>>> 1e5381eaaac07bcbd4528e32c1242287d8629a11
 
 	boolean compressorIsManuallyStopped;
 	
@@ -118,6 +121,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
 		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
 		
+<<<<<<< HEAD
 		if (compressor.enabled()) {
 			if (climber.isClimbing() || compressorIsManuallyStopped) {
 				compressor.stop();	
@@ -128,7 +132,9 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		
+=======
 		gearFlopper.setSpeed(CO.operator.getRightY());
+>>>>>>> 1e5381eaaac07bcbd4528e32c1242287d8629a11
 	}
 
 	/**
