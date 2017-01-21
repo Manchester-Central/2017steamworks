@@ -75,11 +75,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
-		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
-		
-		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
-		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
 	}
 
 	/**
