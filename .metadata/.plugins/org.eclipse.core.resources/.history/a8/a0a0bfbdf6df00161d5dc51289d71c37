@@ -19,7 +19,6 @@ public class DriveBase {
 		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
 		
 		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
-		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
 		
 	}
 	
