@@ -20,6 +20,7 @@ public class Robot extends IterativeRobot {
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
+	GearFlopper gearFlopper;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -30,6 +31,7 @@ public class Robot extends IterativeRobot {
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
+		gearFlopper = new GearFlopper();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
@@ -80,6 +82,8 @@ public class Robot extends IterativeRobot {
 		
 		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
 		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
+		
+		gearFlopper.setSpeed(CO.operator.getRightY());
 	}
 
 	/**
