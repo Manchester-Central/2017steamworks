@@ -1,0 +1,17 @@
+package org.usfirst.frc.team131.robot;
+
+import edu.wpi.first.wpilibj.Victor;
+
+public class DriveBase {
+	
+	private Victor leftVictor;
+	private Victor rightVictor;
+	
+	public DriveBase () {
+		
+		leftVictor = new Victor (PortConstants.LEFT_SPEED_CONTROLLER_PORT);
+		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
+		
+	}
+	
+}

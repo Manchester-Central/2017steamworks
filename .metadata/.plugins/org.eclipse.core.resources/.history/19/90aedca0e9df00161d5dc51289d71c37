@@ -1,0 +1,15 @@
+package org.usfirst.frc.team131.robot;
+
+public class ControllerManage {
+	
+	public Controller driver;
+	public Controller operator;
+	
+	public ControllerManage () {
+		
+		driver = new Controller (0);
+		operator = new Controller (1);
+		
+	}
+	
+}
