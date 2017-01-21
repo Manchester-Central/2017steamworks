@@ -28,36 +28,25 @@ public class DriveBase {
 		
 	}
 	
-	// sets the speed of each speed controller
 	public void setSpeed (double leftSpeed, double rightSpeed) {
 		leftVictor.set(leftSpeed);
 		rightVictor.set(rightSpeed);
 	}
 	
-	// get the speed of the left wheel
 	public double getleftSpeed (){
 		return leftVictor.get(); 
 	}
 	
-	// get the speed of the right wheel
 	public double getrightSpeed (){
 		return rightVictor.get();
 	}
 	
-	// get the distance in inches of the right wheel
 	public double getRightWheelDistance () {
 		return rightEncoder.getDistance();
 	}
 	
-	// get the distance in inches of the left wheel
 	public double getLeftWheelDistance (){
 		return leftEncoder.getDistance();
-	}
-	
-	// resets both encoders to zero 
-	public void resetEncoders () {
-		leftEncoder.reset();
-		rightEncoder.reset();
 	}
 	
 }

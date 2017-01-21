@@ -21,9 +21,4 @@ public class Climber {
 		return speedController.get();
 	}
 	
-	// returns true if the climber is faster than 0.1 or smaller than -0.1
-	public boolean isClimbing (){
-		return !((speedController.get () < 0.1) && (speedController.get() > -0.1));
-	}
-	
 }

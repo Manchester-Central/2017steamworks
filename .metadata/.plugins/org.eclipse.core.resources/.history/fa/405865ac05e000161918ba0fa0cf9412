@@ -54,10 +54,11 @@ public class DriveBase {
 		return leftEncoder.getDistance();
 	}
 	
-	// resets both encoders to zero 
 	public void resetEncoders () {
+		
 		leftEncoder.reset();
 		rightEncoder.reset();
+		
 	}
 	
 }
