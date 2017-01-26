@@ -11,6 +11,15 @@ public class DriveBase {
 	
 	private SpeedController leftVictor;
 	private SpeedController rightVictor;
+	private SpeedController midVictor;
+	private SpeedController fourVictor;
+// SpeedController fiveVictor;
+//	private SpeedController sixVictor;
+//	private SpeedController sevenVictor;
+//	private SpeedController eightVictor;
+//	private SpeedController nineVictor;
+//	private SpeedController tenVictor;
+
 	
 	private Encoder leftEncoder;
 	private Encoder rightEncoder;
@@ -19,19 +28,31 @@ public class DriveBase {
 		
 		leftVictor = new Victor (PortConstants.LEFT_SPEED_CONTROLLER_PORT);
 		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
+		midVictor = new Victor (1);
 		
-		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
-		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
+		// This is connected to motor 1
+		fourVictor = new Victor(3);
 		
-		leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
-		rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
+//		fiveVictor = new Victor(4);
+//		sixVictor = new Victor(5);
+//		sevenVictor = new Victor(6);
+//		eightVictor = new Victor(7);
+//		nineVictor = new Victor(8);
+//		tenVictor = new Victor(9);
+		
+		//leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
+		//rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
+		
+		//leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
+		//rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
 		
 	}
 	
 	// sets the speed of each speed controller
 	public void setSpeed (double leftSpeed, double rightSpeed) {
 		leftVictor.set(leftSpeed);
-		rightVictor.set(rightSpeed);
+		rightVictor.set(leftSpeed);
+		midVictor.set(leftSpeed);
 	}
 	
 	// get the speed of the left wheel
@@ -41,7 +62,7 @@ public class DriveBase {
 	
 	// get the speed of the right wheel
 	public double getrightSpeed (){
-		return rightVictor.get();
+		 return rightVictor.get(); //return 0.0;
 	}
 	
 	// get the distance in inches of the right wheel

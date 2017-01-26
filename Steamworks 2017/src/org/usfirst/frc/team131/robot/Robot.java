@@ -18,7 +18,7 @@ public class Robot extends IterativeRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
-	Climber climber;
+	//Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
 	Compressor compressor;
@@ -35,13 +35,13 @@ public class Robot extends IterativeRobot {
 		compressorIsManuallyStopped = false;
 		compressor = new Compressor();
 		CO = new ControllerOverseer ();
-		climber = new Climber ();
+		//climber = new Climber ();
 		drive = new DriveBase ();
-		gearFlopper = new GearFlopper();
+		//gearFlopper = new GearFlopper();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
-		drive.resetEncoders();
+		//drive.resetEncoders();
 	}
 	
 
@@ -70,13 +70,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		if (compressor.enabled()) {
-			if (climber.isClimbing() || compressorIsManuallyStopped) {
-				compressor.stop();	
-			}
+//			if (climber.isClimbing() || compressorIsManuallyStopped) {
+//				compressor.stop();	
+//			}
 		} else {
-			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-				compressor.start();
-			}
+//			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
+//				compressor.start();
+//			}
 		}
 		
 		switch (autoSelected) {
@@ -105,30 +105,30 @@ public class Robot extends IterativeRobot {
 		}
 		
 		//controls the direction of the climber
-		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
-			climber.setClimberSpeed(1.0);
-		} else if (CO.operator.buttonPressed(CO.operator.LEFT_BUMPER)) {
-			climber.setClimberSpeed(-1.0);
-		} else {
-			climber.setClimberSpeed(0.0);
-		}
+//		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
+//			climber.setClimberSpeed(1.0);
+//		} else if (CO.operator.buttonPressed(CO.operator.LEFT_BUMPER)) {
+//			climber.setClimberSpeed(-1.0);
+//		} else {
+//			climber.setClimberSpeed(0.0);
+//		}
 		
 		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
-		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
-		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
+		//SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
+		//SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
 		
-		if (compressor.enabled()) {
-			if (climber.isClimbing() || compressorIsManuallyStopped) {
-				compressor.stop();	
-			}
-		} else {
-			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-				compressor.start();
-			}
-		}
+//		if (compressor.enabled()) {
+//			if (climber.isClimbing() || compressorIsManuallyStopped) {
+//				compressor.stop();	
+//			}
+//		} else {
+//			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
+//				compressor.start();
+//			}
+//		}
 		
-		gearFlopper.setSpeed(CO.operator.getRightY());
+		//gearFlopper.setSpeed(CO.operator.getRightY());
 	}
 
 	/**

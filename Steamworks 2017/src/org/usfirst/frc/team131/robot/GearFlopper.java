@@ -11,9 +11,9 @@ public class GearFlopper {
 	
 	public GearFlopper ()  {
 		
-		GearFlopper = new Victor (PortConstants.GEAR_FLOPPER_CONTROLLER_PORT);
-		UpperFlopperPosition = new DigitalInput (PortConstants.UPPER_GEAR_FLOPPER_LIMIT_SWITCH);
-		LowerFlopperPosition = new DigitalInput (PortConstants.LOWER_GEAR_FLOPPER_LIMIT_SWITCH);
+		//GearFlopper = new Victor (PortConstants.GEAR_FLOPPER_CONTROLLER_PORT);
+		//UpperFlopperPosition = new DigitalInput (PortConstants.UPPER_GEAR_FLOPPER_LIMIT_SWITCH);
+		//LowerFlopperPosition = new DigitalInput (PortConstants.LOWER_GEAR_FLOPPER_LIMIT_SWITCH);
 	}
 	
 	public void setSpeed(double flopperSpeed) {

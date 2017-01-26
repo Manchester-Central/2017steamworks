@@ -7,8 +7,8 @@ public class Climber {
 	
 	private SpeedController speedController;
 	
-	public Climber () {
-		speedController = new Victor(PortConstants.CLIMBER_PORT);
+	public Climber () { 
+		//speedController = new Victor(PortConstants.CLIMBER_PORT);
 	}
 	
 	// sets climber speed
