@@ -2,4 +2,9 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Encoder"/>
 <fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.PortConstants"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Solenoid"/>
+<fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.Controller.DPadDirection"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.math.BigInteger"/>
+<fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.PneumaticActuator"/>
 </qualifiedTypeNameHistroy>

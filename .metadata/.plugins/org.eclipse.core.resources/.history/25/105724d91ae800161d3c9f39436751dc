@@ -1,0 +1,11 @@
+package org.usfirst.frc.team131.robot;
+
+public interface Toggleable {
+	
+	boolean isStarted ();
+	
+	void start ();
+	
+	void stop ();
+	
+}

@@ -1,0 +1,56 @@
+package org.usfirst.frc.team131.robot;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+
+public class GearFlopper {
+	
+	private Victor gearFlopper;
+	private DigitalInput upperFlopperPosition;
+	private DigitalInput lowerFlopperPosition;
+	private Solenoid pusher;
+	public GearFlopper ()  {
+		pusher = new Solenoid(6);
+		//GearFlopper = new Victor (PortConstants.GEAR_FLOPPER_CONTROLLER_PORT);
+		//UpperFlopperPosition = new DigitalInput (PortConstants.UPPER_GEAR_FLOPPER_LIMIT_SWITCH);
+		//LowerFlopperPosition = new DigitalInput (PortConstants.LOWER_GEAR_FLOPPER_LIMIT_SWITCH);
+	}
+	
+	public void turnOn()
+	{
+		pusher.set(true);
+	}
+	
+	public void turnOff()
+	{
+		pusher.set(false);
+	}
+	
+	public void setSpeed(double flopperSpeed) {
+		
+		if (upperFlopperPosition.get()){
+			
+			if (flopperSpeed > 0) {
+				
+				flopperSpeed = 0;
+			}
+			
+		}
+		
+		if (lowerFlopperPosition.get()){
+			
+			if (flopperSpeed < 0) {
+				
+				flopperSpeed = 0;
+			}
+			
+		}	
+		
+		gearFlopper.set(flopperSpeed);
+		
+	}
+	
+}
+
+

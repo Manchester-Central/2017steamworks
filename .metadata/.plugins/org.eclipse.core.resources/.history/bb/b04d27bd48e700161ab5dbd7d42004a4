@@ -1,0 +1,40 @@
+
+public class yes {
+
+	
+	public static void main(String[] args)
+	{
+		//printPE_1();
+		printPE_2();
+	}
+	
+	/**
+	 * @param (none)
+	 * @return (none)
+	 * 
+	 * 
+	 */
+	static void printPE_1(int y)
+	{
+		int sum = 0;
+		int i = 3;
+		
+		for (i = 3; i < 1000; i += 0 )
+		{
+//			if ( i % 3 == 0 || i % 5 == 0)
+//			{
+//				sum += i;
+//			}
+			i += 12
+		}
+		System.out.println(sum);
+	}
+	
+	static void printPE_2()
+	{
+		
+		int sum
+		
+		
+	}
+}

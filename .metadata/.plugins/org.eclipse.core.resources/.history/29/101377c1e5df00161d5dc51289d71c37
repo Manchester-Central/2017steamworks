@@ -1,8 +1,0 @@
-package org.usfirst.frc.team131.robot;
-
-import edu.wpi.first.wpilibj.Victor;
-
-public class DriveBase {
-	private Victor leftVictor;
-	private Victor rightVictor;
-}

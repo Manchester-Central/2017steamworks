@@ -1,22 +1,30 @@
 package org.usfirst.frc.team131.robot;
 
-public class PortConstants {
+public interface PortConstants {
+	
+	boolean isRaftMode = true; // true if raft mode, false if robot mode
+	
+	// ROBOT-MODE ------------------------------------------+
+	//                                                      |                                          |
+	// RAFT-MODE  -------------------------------------+    |
+	//                                                 |    |
+	//                                                 |    |
+	int UPPER_PNEUMATIC_CHANNEL /*---*/ = isRaftMode ? 5 : -1;
+	int LOWER_PNEUMATIC_CHANNEL /*---*/ = isRaftMode ? 6 : -1;
 	
 	// analog constants
-	static final int LEFT_SPEED_CONTROLLER_PORT = 0;
-	static final int RIGHT_SPEED_CONTROLLER_PORT = 2;
+	int LEFT_SPEED_CONTROLLER_PORT      = isRaftMode ? 0 : -1;
+	int RIGHT_SPEED_CONTROLLER_PORT     = isRaftMode ? 2 : -1;
 
-	//static final int GEAR_FLOPPER_CONTROLLER_PORT = 2;
-	static final int UPPER_GEAR_FLOPPER_LIMIT_SWITCH = 3;
-	static final int LOWER_GEAR_FLOPPER_LIMIT_SWITCH = 4;
+	int UPPER_GEAR_FLOPPER_LIMIT_SWITCH = isRaftMode ? 3 : -1;
+	int LOWER_GEAR_FLOPPER_LIMIT_SWITCH = isRaftMode ? 4 : -1;
 
-	// static final int CLIMBER_PORT = 1;
+	int CLIMBER_PORT                    = isRaftMode ? 6 : -1;
 	
 	// digital constants
-	static final int RIGHT_ENCODER_PORT_ONE = 0;
-	static final int RIGHT_ENCODER_PORT_TWO = 1;
-	static final int LEFT_ENCODER_PORT_ONE = 2;
-	static final int LEFT_ENCODER_PORT_TWO = 3;
+	int RIGHT_ENCODER_PORT_ONE  /*---*/ = isRaftMode ? 0 : -1;
+	int RIGHT_ENCODER_PORT_TWO          = isRaftMode ? 1 : -1;
+	int LEFT_ENCODER_PORT_ONE /*-----*/ = isRaftMode ? 2 : -1;
+	int LEFT_ENCODER_PORT_TWO           = isRaftMode ? 3 : -1;
 	
-
 }
