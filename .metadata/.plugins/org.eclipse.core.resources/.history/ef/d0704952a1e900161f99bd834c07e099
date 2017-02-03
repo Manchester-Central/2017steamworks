@@ -1,0 +1,78 @@
+import java.math.BigInteger;
+
+public class yes {
+
+	
+	public static void main(String[] args)
+	{
+		//printPE_1();
+		printPE_2();
+	}
+	
+	/**
+	 * @param (none)
+	 * @return (none)
+	 * 
+	 * 
+	 */
+	static void printPE_1(int y)
+	{
+		int sum = 0;
+		int i = 3;
+		
+		for (i = 3; i < 1000; i ++ )
+		{
+			if ( i % 3 == 0 || i % 5 == 0)
+			{
+				sum += i;
+			}
+		}
+		System.out.println(sum);
+	}
+	
+	static void printPE_2()
+	{
+		int sum = 0;
+		int prevNum = 1;
+		int i = 2;
+		
+		while(i <= 4000000 )
+		{
+			if (i % 2 == 0){
+			sum += i;
+			System.out.println(sum);
+		}
+			System.out.println(i);
+			i +=prevNum;
+			prevNum = i - prevNum;
+			
+
+			
+		}
+		System.out.println(sum);
+	}
+	static void printPE_3() {
+		
+		BigInteger bi1, bi2, bi3, bi4;
+		
+		bi1 = new BigInteger("600851475143");
+		bi2 = new BigInteger("2");
+		bi3 = new BigInteger("0");
+		bi4 = new BigInteger("1");
+		
+		while (!bi1.isProbablePrime(50)) {
+			
+			if (bi1.mod(bi2).equals(bi3)) {
+				bi1.divide(bi2);
+			}
+			
+			bi2 = bi2.add(bi4);
+			
+		}
+		
+		System.out.println(bi1);
+		
+		
+		
+	}
+}
