@@ -20,7 +20,7 @@ public class PneumaticActuator
 		back.set(!state);
 	}
 	
-	public boolean isActivated () {
+	public boolean isStarted () {
 		return front.get();
 	}
 	

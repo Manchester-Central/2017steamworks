@@ -13,11 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	AutoController auto;
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
-	final String driveForward = "drive forward";
-	final String placeGear = "place gear";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 	
@@ -35,7 +32,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		auto = new AutoController ();
 		compressorIsManuallyStopped = false;
 		compressor = new Compressor();
 		CO = new ControllerOverseer ();
@@ -44,8 +40,6 @@ public class Robot extends IterativeRobot {
 		gearFlopper = new GearFlopper();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
-		chooser.addObject("drive forward", driveForward);
-		chooser.addObject("place gear", placeGear);
 		SmartDashboard.putData("Auto choices", chooser);
 		//drive.resetEncoders();
 	}
@@ -88,12 +82,6 @@ public class Robot extends IterativeRobot {
 		switch (autoSelected) {
 		case customAuto:
 			// Put custom auto code here
-			break;
-		case placeGear:
-			auto.placeGear(drive, gearFlopper, 10.0);
-			break;
-		case driveForward:
-			auto.driveStraight(drive, 10.0);
 			break;
 		case defaultAuto:
 		default:
@@ -157,21 +145,21 @@ public class Robot extends IterativeRobot {
 	{
 		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY))
 		{
-			if (lowerSolenoidState == gearFlopper.getDoor())
+			if (lowerSolenoidState == gearFlopper.getLower())
 			{	
 				if (lowerSolenoidState == false)
 				{
-					gearFlopper.doorSet(true);
+					gearFlopper.lowerSet(true);
 				}
 				else
 				{
-					gearFlopper.doorSet(false);
+					gearFlopper.lowerSet(false);
 				}
 			}
 		}
 		else
 		{
-			lowerSolenoidState = gearFlopper.getDoor();
+			lowerSolenoidState = gearFlopper.getLower();
 		}
 	}
 	

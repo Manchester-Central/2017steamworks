@@ -83,55 +83,22 @@ public class DriveBase {
 		rightEncoder.reset();
 	}
 	
-	public void driveStraight (double distance) 
-	{
-		if (rightEncoder.getDistance() < distance && leftEncoder.getDistance() < distance) 
-		{
-			if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) 
-			{
-				setSpeed (0.5, 0.0);
-			} 
-			else if (leftEncoder.getDistance() - ALLOWANCE > rightEncoder.getDistance()) 
-			{
+	public void driveStraight (double distance) {
+		if (rightEncoder.getDistance() < distance && leftEncoder.getDistance() < distance) {
+			setSpeed (0.5, 0.5);
+			if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) {
+				setSpeed (0.0, 0.5);
+			} else if (leftEncoder.getDistance() - ALLOWANCE > rightEncoder.getDistance()) {
 				setSpeed (0.0, 0.5);
 			}
-			else
-			{
-				setSpeed (0.5, 0.5);
-			}
 		}
 	}
 	
-	// give positive number
-	public void driveStraightBackwards (double distance) 
-	{
-		if (Math.abs(rightEncoder.getDistance()) < distance && Math.abs(leftEncoder.getDistance()) < distance) 
-		{
-			if (Math.abs(leftEncoder.getDistance()) + ALLOWANCE < Math.abs(rightEncoder.getDistance())) 
-			{
-				setSpeed (-0.5, 0.0);
-			} 
-			else if (Math.abs(leftEncoder.getDistance()) - ALLOWANCE > Math.abs(rightEncoder.getDistance())) 
-			{
-				setSpeed (0.0, -0.5);
-			}
-			else
-			{
-				setSpeed (-0.5, -0.5);
-			}
-		}
-	}
-	
-	public void turn (double distance) 
-	{
-		if (Math.abs(leftEncoder.getDistance()) < Math.abs(distance)) 
-		{
-			if (distance < 0) 
-			{
+	public void turn (double distance) {
+		if (Math.abs(leftEncoder.getDistance()) < Math.abs(distance)) {
+			if (distance < 0) {
 				setSpeed (0.5, -0.5);
-			} 
-			else 
-			{
+			} else {
 				setSpeed (-0.5, 0.5);
 			}
 		}
