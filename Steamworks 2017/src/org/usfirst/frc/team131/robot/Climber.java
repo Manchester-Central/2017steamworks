@@ -5,27 +5,29 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Climber {
 	
-	private SpeedController speedController;
+	private SpeedController speedController1;
+	private SpeedController speedController2;
 	
 	public Climber () { 
 	
-		speedController = new Victor(PortConstants.CLIMBER_PORT);
-		
+		speedController1 = new Victor(PortConstants.CLIMBER_PORT_ONE);
+		speedController2 = new Victor(PortConstants.CLIMBER_PORT_TWO);	
 	}
 	
 	// sets climber speed
 	public void setClimberSpeed (double speed) {
-		speedController.set (speed);
+		speedController1.set (speed);
+		speedController2.set(speed);
 	}
 	
 	// gets climber speed
 	public double getClimberSpeed (){
-		return speedController.get();
+		return speedController1.get();
 	}
 	
 	// returns true if the climber is faster than 0.1 or smaller than -0.1
 	public boolean isClimbing (){
-		return ((speedController.get () < 0.1) && (speedController.get() > -0.1)); 
+		return ((getClimberSpeed() < 0.1) && (getClimberSpeed() > -0.1)); 
 	}
 	
 }

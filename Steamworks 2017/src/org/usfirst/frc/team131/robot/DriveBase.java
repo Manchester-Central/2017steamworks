@@ -1,7 +1,8 @@
 package org.usfirst.frc.team131.robot;
 
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 
 public class DriveBase {
@@ -12,9 +13,12 @@ public class DriveBase {
 	
 	private final double ALLOWANCE = 5.0;
 	
-	private SpeedController leftVictor;
-	private SpeedController rightVictor;
-
+	CANTalon leftFrontTalon;
+	CANTalon leftMidTalon;
+	CANTalon leftBackTalon;
+	CANTalon rightFrontTalon;
+	CANTalon rightMidTalon;
+	CANTalon rightBackTalon; 
 
 	
 	private Encoder leftEncoder;
@@ -22,11 +26,17 @@ public class DriveBase {
 	
 	public DriveBase () {
 		
-		leftVictor = new Victor (PortConstants.LEFT_SPEED_CONTROLLER_PORT);
-		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
+		rightFrontTalon = new CANTalon(PortConstants.RIGHT_FRONT_TALON);
+		rightMidTalon = new CANTalon(PortConstants.RIGHT_MID_TALON);
+		rightBackTalon = new CANTalon(PortConstants.RIGHT_BACK_TALON);
 		
-		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
-		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
+		leftFrontTalon = new CANTalon(PortConstants.LEFT_FRONT_TALON);
+		leftMidTalon = new CANTalon(PortConstants.LEFT_MID_TALON);
+		leftBackTalon = new CANTalon(PortConstants.LEFT_BACK_TALON);
+	
+		
+		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_A, PortConstants.LEFT_ENCODER_PORT_B);
+		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_A, PortConstants.RIGHT_ENCODER_PORT_B);
 		
 		leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
 		rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
@@ -35,19 +45,23 @@ public class DriveBase {
 	
 	// sets the speed of each speed controller
 	public void setSpeed (double leftSpeed, double rightSpeed) {
-		leftVictor.set(leftSpeed);
-		rightVictor.set(rightSpeed);
-
+		leftFrontTalon.set(leftSpeed);
+		leftMidTalon.set(leftSpeed);
+		leftBackTalon.set(leftSpeed);
+		rightFrontTalon.set(rightSpeed);
+		rightMidTalon.set(rightSpeed);
+		rightBackTalon.set(rightSpeed);
+		
 	}
 	
 	// get the speed of the left wheel
-	public double getleftSpeed (){
-		return leftVictor.get(); 
+	public double getLeftSpeed (){
+		return leftFrontTalon.get(); 
 	}
 	
 	// get the speed of the right wheel
-	public double getrightSpeed (){
-		 return rightVictor.get(); //return 0.0;
+	public double getRightSpeed (){
+		 return rightFrontTalon.get(); //return 0.0;
 	}
 	
 	// get the distance in inches of the right wheel

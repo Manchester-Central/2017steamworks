@@ -1,11 +1,16 @@
 package org.usfirst.frc.team131.robot;
 
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.CameraServer;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,7 +49,7 @@ public class Robot extends IterativeRobot {
 		//test = new Victor (PORT);
 		//auto = new AutoController ();
 		compressorIsManuallyStopped = false;
-		//compressor = new Compressor();
+		//compressor = new Compressor(1);
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
@@ -189,7 +194,12 @@ public class Robot extends IterativeRobot {
 		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
 		climber.setClimberSpeed(CO.operator.getLeftY());
-		
+	
+		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
+		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
+		SmartDashboard.putNumber("Left Speed", drive.getLeftSpeed());
+		SmartDashboard.putNumber("Right Speed", drive.getRightSpeed());
+
 		//SmartDashboard.putBoolean("compressor is low", compressor.getPressureSwitchValue());
 		//SmartDashboard.putNumber("current used by compressor", compressor.getCompressorCurrent()); 
 		//SmartDashboard.putNumber("Analog Sensor", sensor.getAnalogUltrasonic());
@@ -198,41 +208,17 @@ public class Robot extends IterativeRobot {
 		/*
 		SmartDashboard.putNumber("Vex Sensor", sensor.getVexUltrasonic());
 		*/
-		//test.set(CO.operator.getLeftY());
 		
 		
-		//processStartButton ();
+		//processStartButton();
 		
 		//processAButton ();
 		
 		//processBButton ();
-		//controls the direction of the climber
-//		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
-//			climber.setClimberSpeed(1.0);
-//		} else if (CO.operator.buttonPressed(CO.operator.LEFT_BUMPER)) {
-//			climber.setClimberSpeed(-1.0);
-//		} else {
-//			climber.setClimberSpeed(0.0);
-//		}
 		
-//		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
-		//SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
-		//SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
 		
-//		if (compressor.enabled()) {
-//			if (climber.isClimbing() || compressorIsManuallyStopped) {
-//				compressor.stop();
-//				SmartDashboard.putBoolean("compressor is started", false);
-//			}
-//		} else {
-//			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-//				compressor.start();
-//				SmartDashboard.putBoolean("compressor is started", true);
-//			}
-//		}
 		
-		//gearFlopper.setSpeed(CO.operator.getRightY());
 	}
 	
 	@Override

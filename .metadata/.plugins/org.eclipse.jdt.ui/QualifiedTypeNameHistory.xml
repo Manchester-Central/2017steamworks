@@ -6,7 +6,7 @@
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.PneumaticActuator"/>
 <fullyQualifiedTypeName name="java.math.BigInteger"/>
-<fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.PortConstants"/>
 <fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.SensorController"/>
 <fullyQualifiedTypeName name="edu.wpi.first.wpilibj.smartdashboard.SmartDashboard"/>
+<fullyQualifiedTypeName name="org.usfirst.frc.team131.robot.PortConstants"/>
 </qualifiedTypeNameHistroy>

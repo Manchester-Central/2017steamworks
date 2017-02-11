@@ -1,0 +1,7 @@
+1486837830721	Rename field 'speedController'
+1486838394146	Rename method 'getrightSpeed'
+1486838404089	Rename method 'getleftSpeed'
+1486838695366	Rename field 'RIGHT_ENCODER_PORT_ONE'
+1486838711333	Rename field 'RIGHT_ENCODER_PORT_TWO'
+1486838729343	Rename field 'LEFT_ENCODER_PORT_ONE'
+1486838741510	Rename field 'LEFT_ENCODER_PORT_TWO'
