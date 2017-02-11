@@ -1,7 +1,9 @@
 package org.usfirst.frc.team131.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -13,19 +15,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	AutoController auto;
+	//final int PORT = 3;
+	//AutoController auto;
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	final String driveForward = "drive forward";
 	final String placeGear = "place gear";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	//SpeedController test;
 	
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
-	Compressor compressor;
-	GearFlopper gearFlopper;
+	//Compressor compressor;
+	//GearFlopper gearFlopper;
+	//SensorController sensor;
+	//CameraServer cv;
 
 	boolean compressorIsManuallyStopped;
 	
@@ -35,19 +41,22 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		auto = new AutoController ();
+		//test = new Victor (PORT);
+		//auto = new AutoController ();
 		compressorIsManuallyStopped = false;
-		compressor = new Compressor();
+		//compressor = new Compressor();
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
-		gearFlopper = new GearFlopper();
+		//gearFlopper = new GearFlopper();
+		//sensor = new SensorController();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		chooser.addObject("drive forward", driveForward);
 		chooser.addObject("place gear", placeGear);
 		SmartDashboard.putData("Auto choices", chooser);
 		//drive.resetEncoders();
+		//cv.getInstance().startAutomaticCapture();
 	}
 	
 
@@ -64,6 +73,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		drive.resetEncoders();
 		autoSelected = chooser.getSelected();
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
@@ -75,25 +85,19 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		if (compressor.enabled()) {
-//			if (climber.isClimbing() || compressorIsManuallyStopped) {
-//				compressor.stop();	
-//			}
-		} else {
-//			if (!(climber.isClimbing() || compressorIsManuallyStopped)) {
-//				compressor.start();
-//			}
-		}
+		SmartDashboard.putNumber("right wheel", drive.getRightWheelDistance());
+		SmartDashboard.putNumber("left wheel", drive.getLeftWheelDistance());
+
 		
 		switch (autoSelected) {
 		case customAuto:
 			// Put custom auto code here
 			break;
 		case placeGear:
-			auto.placeGear(drive, gearFlopper, 10.0);
+			//auto.placeGear(drive, gearFlopper, 10.0);
 			break;
 		case driveForward:
-			auto.driveStraight(drive, 10.0);
+			//auto.driveStraight(drive, 20000.0);
 			break;
 		case defaultAuto:
 		default:
@@ -108,72 +112,72 @@ public class Robot extends IterativeRobot {
 	
 	boolean lowerSolenoidState = false;
 	
-	public void processStartButton () 
-	{
-		if (CO.operator.buttonPressed(Controller.START_BUTTON))
-		{
-			if (compressorState == compressor.enabled())
-			{	
-				if (compressorState == false)
-				{
-					compressor.start();
-				}
-				else
-				{
-					compressor.stop();
-				}
-			}
-		}
-		else
-		{
-			compressorState = compressor.enabled();
-		}
-	}
+//	public void processStartButton () 
+//	{
+//		if (CO.operator.buttonPressed(Controller.START_BUTTON))
+//		{
+//			if (compressorState == compressor.enabled())
+//			{	
+//				if (compressorState == false)
+//				{
+//					compressor.start();
+//				}
+//				else
+//				{
+//					compressor.stop();
+//				}
+//			}
+//		}
+//		else
+//		{
+//			compressorState = compressor.enabled();
+//		}
+//	}
 	
 	
-	private void processAButton()
-	{
-		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY))
-		{
-			if (upperSolenoidState == gearFlopper.getGearPusher())
-			{	
-				if (upperSolenoidState == false)
-				{
-					gearFlopper.gearPusherSet(true);
-				}
-				else
-				{
-					gearFlopper.gearPusherSet(false);
-				}
-			}
-		}
-		else
-		{
-			upperSolenoidState = gearFlopper.getGearPusher();
-		}
-	}
+//	private void processAButton()
+//	{
+//		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY))
+//		{
+//			if (upperSolenoidState == gearFlopper.getGearPusher())
+//			{	
+//				if (upperSolenoidState == false)
+//				{
+//					gearFlopper.gearPusherSet(true);
+//				}
+//				else
+//				{
+//					gearFlopper.gearPusherSet(false);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			upperSolenoidState = gearFlopper.getGearPusher();
+//		}
+//	}
 	
-	public void processBButton () 
-	{
-		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY))
-		{
-			if (lowerSolenoidState == gearFlopper.getDoor())
-			{	
-				if (lowerSolenoidState == false)
-				{
-					gearFlopper.doorSet(true);
-				}
-				else
-				{
-					gearFlopper.doorSet(false);
-				}
-			}
-		}
-		else
-		{
-			lowerSolenoidState = gearFlopper.getDoor();
-		}
-	}
+//	public void processBButton () 
+//	{
+//		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY))
+//		{
+//			if (lowerSolenoidState == gearFlopper.getDoor())
+//			{	
+//				if (lowerSolenoidState == false)
+//				{
+//					gearFlopper.doorSet(true);
+//				}
+//				else
+//				{
+//					gearFlopper.doorSet(false);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			lowerSolenoidState = gearFlopper.getDoor();
+//		}
+//	}
 	
 	/**
 	 * This function is called periodically during operator control
@@ -181,16 +185,27 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic()
 	{
+		
+		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		climber.setClimberSpeed(CO.operator.getLeftY());
+		
 		//SmartDashboard.putBoolean("compressor is low", compressor.getPressureSwitchValue());
 		//SmartDashboard.putNumber("current used by compressor", compressor.getCompressorCurrent()); 
+		//SmartDashboard.putNumber("Analog Sensor", sensor.getAnalogUltrasonic());
+		//SmartDashboard.putBoolean("right optical", sensor.getRightOptical());
+		//SmartDashboard.putBoolean("left optical", sensor.getleftOptical());
+		/*
+		SmartDashboard.putNumber("Vex Sensor", sensor.getVexUltrasonic());
+		*/
+		//test.set(CO.operator.getLeftY());
 		
 		
+		//processStartButton ();
 		
-		processStartButton ();
+		//processAButton ();
 		
-		processAButton ();
-		
-		processBButton ();
+		//processBButton ();
 		//controls the direction of the climber
 //		if (CO.operator.buttonPressed(CO.operator.LEFT_TRIGGER)) {
 //			climber.setClimberSpeed(1.0);
@@ -222,7 +237,7 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void disabledPeriodic () {
-		compressor.stop();
+		//compressor.stop();
 	}
 
 	/**

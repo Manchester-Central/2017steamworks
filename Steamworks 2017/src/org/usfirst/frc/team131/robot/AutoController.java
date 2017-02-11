@@ -17,7 +17,7 @@ public class AutoController {
 				break;
 			case DRIVE_FORWARD:
 				drive.driveStraight(distance);
-				if (drive.getrightSpeed() == 0 && drive.getleftSpeed() == 0) 
+				if (drive.getLeftWheelDistance() >= distance) 
 				{
 					state = State.DO_NOTHING;
 				}
@@ -39,7 +39,7 @@ public class AutoController {
 				break;
 			case DRIVE_BACKWARDS:
 				drive.driveStraightBackwards(distance);
-				if (drive.getrightSpeed() == 0 && drive.getleftSpeed() == 0)
+				if (drive.getLeftWheelDistance() >= distance)
 				{
 					state = State.PLACE_GEAR;
 				}

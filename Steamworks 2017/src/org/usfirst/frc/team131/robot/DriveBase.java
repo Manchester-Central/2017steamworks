@@ -6,21 +6,15 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class DriveBase {
 	
-	private final double WHEEL_CIRCUMFERENCE = 1;
-	private final double PULSES_PER_REVOLUTION = 1;
+	private final double WHEEL_CIRCUMFERENCE = 4.0 * Math.PI;
+	
+	private final double PULSES_PER_REVOLUTION = 360.0;
 	
 	private final double ALLOWANCE = 5.0;
 	
 	private SpeedController leftVictor;
 	private SpeedController rightVictor;
-	private SpeedController midVictor;
-	private SpeedController fourVictor;
-//  private SpeedController fiveVictor;
-//	private SpeedController sixVictor;
-//	private SpeedController sevenVictor;
-//	private SpeedController eightVictor;
-//	private SpeedController nineVictor;
-//	private SpeedController tenVictor;
+
 
 	
 	private Encoder leftEncoder;
@@ -30,31 +24,20 @@ public class DriveBase {
 		
 		leftVictor = new Victor (PortConstants.LEFT_SPEED_CONTROLLER_PORT);
 		rightVictor = new Victor (PortConstants.RIGHT_SPEED_CONTROLLER_PORT);
-		midVictor = new Victor (1);
 		
-		// This is connected to motor 1
-		fourVictor = new Victor(3);
+		leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
+		rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
 		
-//		fiveVictor = new Victor(4);
-//		sixVictor = new Victor(5);
-//		sevenVictor = new Victor(6);
-//		eightVictor = new Victor(7);
-//		nineVictor = new Victor(8);
-//		tenVictor = new Victor(9);
-		
-		//leftEncoder = new Encoder (PortConstants.LEFT_ENCODER_PORT_ONE, PortConstants.LEFT_ENCODER_PORT_TWO);
-		//rightEncoder = new Encoder (PortConstants.RIGHT_ENCODER_PORT_ONE, PortConstants.RIGHT_ENCODER_PORT_TWO);
-		
-		//leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
-		//rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
+		leftEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
+		rightEncoder.setDistancePerPulse(WHEEL_CIRCUMFERENCE / PULSES_PER_REVOLUTION);
 		
 	}
 	
 	// sets the speed of each speed controller
 	public void setSpeed (double leftSpeed, double rightSpeed) {
 		leftVictor.set(leftSpeed);
-		rightVictor.set(leftSpeed);
-		midVictor.set(leftSpeed);
+		rightVictor.set(rightSpeed);
+
 	}
 	
 	// get the speed of the left wheel
@@ -91,7 +74,7 @@ public class DriveBase {
 			{
 				setSpeed (0.5, 0.0);
 			} 
-			else if (leftEncoder.getDistance() - ALLOWANCE > rightEncoder.getDistance()) 
+			else if (leftEncoder.getDistance() - ALLOWANCE > Math.abs(rightEncoder.getDistance())) 
 			{
 				setSpeed (0.0, 0.5);
 			}
