@@ -25,14 +25,12 @@ public class GearFlopper {
 	public boolean gearIsPresent;
 	
 	public GearFlopper ()  {
-		upperSolenoid = new PneumaticActuator(PortConstants.UPPER_PNEUMATIC_CHANNEL,PortConstants.LOWER_PNEUMATIC_CHANNEL);
+		upperSolenoid = new PneumaticActuator(PortConstants.LOWER_FRONT_PNEUMATIC_CHANNEL, PortConstants.LOWER_BACK_PNEUMATIC_CHANNEL);
 		
 		gearIsPresent = false;
 		
-		lowerSolenoid = new PneumaticActuator(4, 7);
-		//GearFlopper = new Victor (PortConstants.GEAR_FLOPPER_CONTROLLER_PORT);
-		//UpperFlopperPosition = new DigitalInput (PortConstants.UPPER_GEAR_FLOPPER_LIMIT_SWITCH);
-		//LowerFlopperPosition = new DigitalInput (PortConstants.LOWER_GEAR_FLOPPER_LIMIT_SWITCH);
+		lowerSolenoid = new PneumaticActuator(PortConstants.UPPER_BACK_PNEUMATIC_CHANNEL, PortConstants.UPPER_FRONT_PNEUMATIC_CHANNEL);
+		
 	}
 	
 	public void gearPusherSet(boolean state) 
@@ -63,29 +61,6 @@ public class GearFlopper {
 		gearPusherSet (false);
 	}
 	
-//	public void setSpeed(double flopperSpeed) {
-//		
-//		if (upperFlopperPosition.get()){
-//			
-//			if (flopperSpeed > 0) {
-//				
-//				flopperSpeed = 0;
-//			}
-//			
-//		}
-//		
-//		if (lowerFlopperPosition.get()){
-//			
-//			if (flopperSpeed < 0) {
-//				
-//				flopperSpeed = 0;
-//			}
-//			
-//		}	
-//		
-//		gearFlopper.set(flopperSpeed);
-//		
-//	}
 	
 }
 

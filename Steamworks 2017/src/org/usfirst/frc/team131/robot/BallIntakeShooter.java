@@ -17,9 +17,28 @@ public class BallIntakeShooter {
 		intake = new Spark(PortConstants.INTAKE_SPARK_PORT);
 		shooter = new Spark(PortConstants.SHOOTER_SPARK_PORT);
 		choice = new Spark(PortConstants.CHOICE_ROLLER_PORT);
-		agitator = new Spark(PortConstants.AGITATOR_SPARK_PORT);
-		
-		
+		agitator = new Spark(PortConstants.AGITATOR_IS_BACK);
 		
 	}
+	
+	// sets the speed of each speed controller
+		public void setIntakeSpeed (double speed) {
+			intake.set(speed);
+			
+		}
+	// sets the speed of each speed controller
+		public void setShooterSpeed (double speed) {
+			shooter.set(speed);
+			
+		}
+		
+	// sets the speed of each speed controller
+		public void setChoiceSpeed (double speed) {
+			choice.set(speed);
+			
+		}
+	// 
+		public void setAgitatorSpeed (double speed) {
+			agitator.set(speed);
+		}
 }

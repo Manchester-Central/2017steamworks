@@ -10,13 +10,13 @@ public class SensorController {
 	
 	private AnalogInput analogUltrasonic;
 	
-	//private Ultrasonic rightUltrasonic;
+
 	private DigitalInput leftOpticalSensor;
 	private DigitalInput rightOpticalSensor;
 	
 	public SensorController () {
 		vexUltrasonic = new Ultrasonic(PortConstants.LEFT_ULTRASONIC_SENSOR_OUTPUT, PortConstants.LEFT_ULTRASONIC_SENSOR_INPUT);
-		//rightUltrasonic = new Ultrasonic(PortConstants.RIGHT_ULTRASONIC_SENSOR_OUTPUT, PortConstants.RIGHT_ULTRASONIC_SENSOR_INPUT);
+	
 		
 		analogUltrasonic = new AnalogInput(PortConstants.ANALOG_ULTRASONIC_SENSOR);
 		leftOpticalSensor = new DigitalInput(PortConstants.LEFT_OPTICAL_SENSOR);

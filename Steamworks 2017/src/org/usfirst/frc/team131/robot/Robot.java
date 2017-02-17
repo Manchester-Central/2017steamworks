@@ -1,12 +1,8 @@
 package org.usfirst.frc.team131.robot;
 
-import com.ctre.CANTalon;
-
-import edu.wpi.first.wpilibj.CameraServer;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	//final int PORT = 3;
 	//AutoController auto;
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -28,16 +23,22 @@ public class Robot extends IterativeRobot {
 	final String placeGear = "place gear";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
-	//SpeedController test;
-	
+	NetworkTable table;
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
-	//Compressor compressor;
-	//GearFlopper gearFlopper;
+	BallIntakeShooter shumper;
+	Compressor compressor;
+	GearFlopper gearFlopper;
 	//SensorController sensor;
-	//CameraServer cv;
 
+	double leftX;
+	double leftY;
+	double leftArea;
+	double rightX;
+	double rightY;
+	double rightArea;
+	
 	boolean compressorIsManuallyStopped;
 	
 	/**
@@ -46,13 +47,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		//test = new Victor (PORT);
 		//auto = new AutoController ();
 		compressorIsManuallyStopped = false;
-		//compressor = new Compressor(1);
+		compressor = new Compressor(1);
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
+		shumper = new BallIntakeShooter ();
+		table = NetworkTable.getTable("camera");
 		//gearFlopper = new GearFlopper();
 		//sensor = new SensorController();
 		chooser.addDefault("Default Auto", defaultAuto);
@@ -117,72 +119,72 @@ public class Robot extends IterativeRobot {
 	
 	boolean lowerSolenoidState = false;
 	
-//	public void processStartButton () 
-//	{
-//		if (CO.operator.buttonPressed(Controller.START_BUTTON))
-//		{
-//			if (compressorState == compressor.enabled())
-//			{	
-//				if (compressorState == false)
-//				{
-//					compressor.start();
-//				}
-//				else
-//				{
-//					compressor.stop();
-//				}
-//			}
-//		}
-//		else
-//		{
-//			compressorState = compressor.enabled();
-//		}
-//	}
+	public void processStartButton () 
+	{
+		if (CO.driver.buttonPressed(Controller.START_BUTTON))
+		{
+			if (compressorState == compressor.enabled())
+			{	
+				if (compressorState == false)
+				{
+					compressor.start();
+				}
+				else
+				{
+					compressor.stop();
+				}
+			}
+		}
+		else
+		{
+			compressorState = compressor.enabled();
+		}
+	}
 	
 	
-//	private void processAButton()
-//	{
-//		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY))
-//		{
-//			if (upperSolenoidState == gearFlopper.getGearPusher())
-//			{	
-//				if (upperSolenoidState == false)
-//				{
-//					gearFlopper.gearPusherSet(true);
-//				}
-//				else
-//				{
-//					gearFlopper.gearPusherSet(false);
-//				}
-//			}
-//		}
-//		else
-//		{
-//			upperSolenoidState = gearFlopper.getGearPusher();
-//		}
-//	}
+	private void processAButton()
+	{
+		if (CO.driver.buttonPressed(Controller.DOWN_A_ABXY))
+		{
+			if (upperSolenoidState == gearFlopper.getGearPusher())
+			{	
+				if (upperSolenoidState == false)
+				{
+					gearFlopper.gearPusherSet(true);
+				}
+				else
+				{
+					gearFlopper.gearPusherSet(false);
+				}
+			}
+		}
+		else
+		{
+			upperSolenoidState = gearFlopper.getGearPusher();
+		}
+	}
 	
-//	public void processBButton () 
-//	{
-//		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY))
-//		{
-//			if (lowerSolenoidState == gearFlopper.getDoor())
-//			{	
-//				if (lowerSolenoidState == false)
-//				{
-//					gearFlopper.doorSet(true);
-//				}
-//				else
-//				{
-//					gearFlopper.doorSet(false);
-//				}
-//			}
-//		}
-//		else
-//		{
-//			lowerSolenoidState = gearFlopper.getDoor();
-//		}
-//	}
+	public void processBButton () 
+	{
+		if (CO.driver.buttonPressed(Controller.RIGHT_B_ABXY))
+		{
+			if (lowerSolenoidState == gearFlopper.getDoor())
+			{	
+				if (lowerSolenoidState == false)
+				{
+					gearFlopper.doorSet(true);
+				}
+				else
+				{
+					gearFlopper.doorSet(false);
+				}
+			}
+		}
+		else
+		{
+			lowerSolenoidState = gearFlopper.getDoor();
+		}
+	}
 	
 	/**
 	 * This function is called periodically during operator control
@@ -191,34 +193,33 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic()
 	{
 		
-		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		leftX = table.getNumber("leftX", -1.0);
+		leftY = table.getNumber("leftY", -1.0);
+		leftArea = table.getNumber("leftArea", -1.0);
+		rightX = table.getNumber("rightX", -1.0);
+		rightY = table.getNumber("rightY", -1.0);
+		rightArea = table.getNumber("rightArea", -1.0);
 		
-		climber.setClimberSpeed(CO.operator.getLeftY());
+		//drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		//climber.setClimberSpeed(CO.operator.getLeftY());
+		
+		shumper.setIntakeSpeed(CO.driver.getLeftY());
+		shumper.setShooterSpeed(CO.driver.getRightY());
+		shumper.setChoiceSpeed(CO.driver.getLeftX());
+		
+		processStartButton();
+
+		processAButton();
+		
+		processBButton();
 	
 		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
 		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
 		SmartDashboard.putNumber("Left Speed", drive.getLeftSpeed());
 		SmartDashboard.putNumber("Right Speed", drive.getRightSpeed());
+		
 
-		//SmartDashboard.putBoolean("compressor is low", compressor.getPressureSwitchValue());
-		//SmartDashboard.putNumber("current used by compressor", compressor.getCompressorCurrent()); 
-		//SmartDashboard.putNumber("Analog Sensor", sensor.getAnalogUltrasonic());
-		//SmartDashboard.putBoolean("right optical", sensor.getRightOptical());
-		//SmartDashboard.putBoolean("left optical", sensor.getleftOptical());
-		/*
-		SmartDashboard.putNumber("Vex Sensor", sensor.getVexUltrasonic());
-		*/
-		
-		
-		//processStartButton();
-		
-		//processAButton ();
-		
-		//processBButton ();
-		
-		
-		
-		
 	}
 	
 	@Override

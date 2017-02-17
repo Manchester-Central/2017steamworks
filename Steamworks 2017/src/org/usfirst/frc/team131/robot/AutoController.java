@@ -8,6 +8,7 @@ public class AutoController {
 	
 	State state = State.INITIAL;
 	
+	//Drives Straight
 	public void driveStraight (DriveBase drive, double distance) 
 	{
 		switch (state) 
@@ -30,6 +31,7 @@ public class AutoController {
 		}
 	}
 	
+	// Drives(backwards) and Places Gear 
 	public void placeGear (DriveBase drive, GearFlopper gearFlopper, double distance)
 	{
 		switch (state)
