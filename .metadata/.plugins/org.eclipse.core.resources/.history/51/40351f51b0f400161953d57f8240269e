@@ -120,10 +120,6 @@ public class DriveBase {
 				setSpeed (0.5, -0.5);
 			}
 		}
-		else
-		{
-			setSpeed (0, 0);
-		}
 	}
 
 }
