@@ -192,7 +192,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic()
 	{
-
+		
+		
+		
+		//drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		//climber.setClimberSpeed(CO.operator.getLeftY());
+		
 		shumper.setIntakeSpeed(CO.driver.getLeftY());
 		shumper.setShooterSpeed(CO.driver.getRightY());
 		shumper.setChoiceSpeed(CO.driver.getLeftX());

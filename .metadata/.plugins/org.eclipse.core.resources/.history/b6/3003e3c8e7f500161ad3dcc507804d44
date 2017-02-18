@@ -41,15 +41,8 @@ public class AutoController {
 				break;
 			case TURN:
 				if (Math.abs(distanceOffset) > distanceCanOffset) {
-					if (distanceOffset < 0) {
-						drive.turnLeft(0.5);
-					} else {
-						drive.turnRight(0.5);
-					}
-				} else {
-					state = state.DRIVE_FORWARD;
+					
 				}
-				break;
 			case DRIVE_FORWARD:
 				drive.driveStraight(distance);
 				if (drive.getLeftWheelDistance() >= distance)

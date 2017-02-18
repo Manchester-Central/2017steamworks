@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private static final double CAMERA_CETROID = 0;
-	AutoController auto;
+	//AutoController auto;
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	final String driveForward = "drive forward";
@@ -36,8 +35,6 @@ public class Robot extends IterativeRobot {
 	double targetCentroid;
 	final double CAMERA_CENTROID = 20;
 	
-	double offset;
-	
 	boolean compressorIsManuallyStopped;
 	
 	/**
@@ -46,7 +43,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		auto = new AutoController ();
+		//auto = new AutoController ();
 		compressorIsManuallyStopped = false;
 		compressor = new Compressor(1);
 		CO = new ControllerOverseer ();
@@ -91,17 +88,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		SmartDashboard.putNumber("right wheel", drive.getRightWheelDistance());
+		SmartDashboard.putNumber("left wheel", drive.getLeftWheelDistance());
 		
 		targetCentroid = table.getNumber("targetCentroid", Math.sqrt(-1)); 
 
-		offset = CAMERA_CETROID - targetCentroid;
 		
 		switch (autoSelected) {
 		case customAuto:
 			// Put custom auto code here
 			break;
 		case placeGear:
-			auto.placeGear(drive, gearFlopper, 10.0, offset, 20.0);
+			//auto.placeGear(drive, gearFlopper, 10.0);
 			break;
 		case driveForward:
 			//auto.driveStraight(drive, 20000.0);
@@ -192,7 +190,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic()
 	{
-
+		
+		
+		
+		//drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		//climber.setClimberSpeed(CO.operator.getLeftY());
+		
 		shumper.setIntakeSpeed(CO.driver.getLeftY());
 		shumper.setShooterSpeed(CO.driver.getRightY());
 		shumper.setChoiceSpeed(CO.driver.getLeftX());
@@ -203,12 +207,17 @@ public class Robot extends IterativeRobot {
 		
 		processBButton();
 	
+		SmartDashboard.putNumber("left distance traveled", drive.getLeftWheelDistance());
+		SmartDashboard.putNumber("right distance traveled", drive.getRightWheelDistance());
+		SmartDashboard.putNumber("Left Speed", drive.getLeftSpeed());
+		SmartDashboard.putNumber("Right Speed", drive.getRightSpeed());
+		
 
 	}
 	
 	@Override
 	public void disabledPeriodic () {
-		
+		//compressor.stop();
 	}
 
 	/**
