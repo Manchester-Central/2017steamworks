@@ -47,12 +47,12 @@ public class AutoController {
 				s = "turn";
 				if (Math.abs(distanceOffset) > distanceCanOffset) {
 					if (distanceOffset < 0) {
-						drive.turnLeft(0.5);
+						drive.turnLeft(0.2);
 					} else {
-						drive.turnRight(0.5);
+						drive.turnRight(0.2);
 					}
 				} else {
-					state = state.DRIVE_FORWARD_TWO;
+					state = State.DRIVE_FORWARD;
 				}
 				break;
 			case DRIVE_FORWARD:

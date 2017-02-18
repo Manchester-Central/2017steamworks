@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private static final double CAMERA_CETROID = 0;
 	AutoController auto;
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -32,10 +31,6 @@ public class Robot extends IterativeRobot {
 	Compressor compressor;
 	GearFlopper gearFlopper;
 	SensorController SC;
-	
-	private enum State {
-		INITIAL, DO_NOTHING, DRIVE_FORWARD, DRIVE_BACKWARD, PLACE_GEAR, TURN
-	}
 	
 	double offset;
 	
@@ -121,10 +116,11 @@ public class Robot extends IterativeRobot {
 
 	boolean compressorState = false;
 	
-	boolean upperSolenoidState = false;
+	//boolean upperSolenoidState = false;
 	
-	boolean lowerSolenoidState = false;
+	//boolean lowerSolenoidState = false;
 	
+	// toggle compressor logic
 	public void processStartButton () 
 	{
 		if (CO.driver.buttonPressed(Controller.START_BUTTON))
@@ -148,49 +144,49 @@ public class Robot extends IterativeRobot {
 	}
 	
 	
-	private void processAButton()
-	{
-		if (CO.driver.buttonPressed(Controller.DOWN_A_ABXY))
-		{
-			if (upperSolenoidState == gearFlopper.getGearPusher())
-			{	
-				if (upperSolenoidState == false)
-				{
-					gearFlopper.gearPusherSet(true);
-				}
-				else
-				{
-					gearFlopper.gearPusherSet(false);
-				}
-			}
-		}
-		else
-		{
-			upperSolenoidState = gearFlopper.getGearPusher();
-		}
-	}
-	
-	public void processBButton () 
-	{
-		if (CO.driver.buttonPressed(Controller.RIGHT_B_ABXY))
-		{
-			if (lowerSolenoidState == gearFlopper.getDoor())
-			{	
-				if (lowerSolenoidState == false)
-				{
-					gearFlopper.doorSet(true);
-				}
-				else
-				{
-					gearFlopper.doorSet(false);
-				}
-			}
-		}
-		else
-		{
-			lowerSolenoidState = gearFlopper.getDoor();
-		}
-	}
+//	private void processAButton()
+//	{
+//		if (CO.driver.buttonPressed(Controller.DOWN_A_ABXY))
+//		{
+//			if (upperSolenoidState == gearFlopper.getGearPusher())
+//			{	
+//				if (upperSolenoidState == false)
+//				{
+//					gearFlopper.gearPusherSet(true);
+//				}
+//				else
+//				{
+//					gearFlopper.gearPusherSet(false);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			upperSolenoidState = gearFlopper.getGearPusher();
+//		}
+//	}
+//	
+//	public void processBButton () 
+//	{
+//		if (CO.driver.buttonPressed(Controller.RIGHT_B_ABXY))
+//		{
+//			if (lowerSolenoidState == gearFlopper.getDoor())
+//			{	
+//				if (lowerSolenoidState == false)
+//				{
+//					gearFlopper.doorSet(true);
+//				}
+//				else
+//				{
+//					gearFlopper.doorSet(false);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			lowerSolenoidState = gearFlopper.getDoor();
+//		}
+//	}
 	
 	/**
 	 * This function is called periodically during operator control
@@ -199,69 +195,48 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic()
 	{
 		
+		
 		// puts the offset to the dashboard
 		SmartDashboard.putNumber("offset", offset);
 		
 		// processes camera centroid offset
 		processOffset();
 		
-		State state = State.INITIAL;
-		
-		double distanceCanOffset = 7;
-		double distToTower = SC.getAnalogUltrasonic();
-		switch (state)
-		{
-			case INITIAL:
-				state = State.TURN;
-				SmartDashboard.putString("Initial", "done");
-				break;
-			case TURN:
-				if (Math.abs(SC.getAnalogUltrasonic()) > distanceCanOffset) {
-				} else {
-					SmartDashboard.putString("Turn", "done");
-					state = state.DRIVE_FORWARD;
-				}
-				break;
-			case DRIVE_FORWARD:
-				SmartDashboard.putString("Drive Forward", "done");
-				break;
-			case PLACE_GEAR:
-				state = State.DO_NOTHING;
-				SmartDashboard.putString("Place Gear", "done");
-			case DO_NOTHING:
-			default:
-				SmartDashboard.putString("Do Nothing", "done");
-
-		}
-		
-		//
+		// auto places the gear
 		if (CO.driver.buttonPressed(Controller.RIGHT_TRIGGER)) {
 			drive.resetEncoders();
 			auto.placeGear(drive, gearFlopper, SC, offset, 20.0);
 		}
 		
+		// shoots the with the shumper
 		if (CO.operator.buttonPressed(Controller.RIGHT_BUMPER)) {
 			shumper.shoot();
 		}
 		
+		// intakes with the shumper
 		if (CO.operator.buttonPressed(Controller.RIGHT_TRIGGER)) {
 			shumper.intake();
 		}
 		
+		// sets drive speed
 		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
+		//sets climber speed
 		climber.setClimberSpeed(CO.operator.getLeftY());
 		
+		//ejects gear
 		if (CO.operator.buttonPressed(Controller.LEFT_TRIGGER)){
 			gearFlopper.ejectGear(2000L);
 		}
 		
+		//unsheaths cover
 		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY)){
-			gearFlopper.coverSet(true);
+			gearFlopper.coverSet(false);
 		}
 		
+		//sheaths cover
 		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY)){
-			gearFlopper.coverSet(false);
+			gearFlopper.coverSet(true);
 		}
 
 		// test code used for testing
@@ -277,11 +252,13 @@ public class Robot extends IterativeRobot {
 			gearFlopper.coverSet(false);
 		}
 		
+		// toggles the compressor
 		processStartButton();
 
-		processAButton();
 		
-		processBButton();
+		//processAButton();
+		
+		//processBButton();
 	
 // Hola
 	}

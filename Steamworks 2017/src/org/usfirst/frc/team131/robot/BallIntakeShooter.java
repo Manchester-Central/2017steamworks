@@ -2,7 +2,6 @@ package org.usfirst.frc.team131.robot;
 
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 
 public class BallIntakeShooter {
 	

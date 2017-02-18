@@ -11891,3 +11891,15 @@ java.net.UnknownHostException: services.gradle.org
 
 !ENTRY WPILib_Java_Robot_Development 1 0 2017-02-18 13:17:20.331
 !MESSAGE Targets: deploy, Mode: run
+
+!ENTRY WPILib_Java_Robot_Development 1 0 2017-02-18 15:57:16.546
+!MESSAGE Running ant file: C:\Users\CHAOS131\workspace\2017steamworks\Steamworks 2017\build.xml
+
+!ENTRY WPILib_Java_Robot_Development 1 0 2017-02-18 15:57:16.562
+!MESSAGE Targets: deploy, Mode: run
+
+!ENTRY WPILib_Java_Robot_Development 1 0 2017-02-18 16:03:53.670
+!MESSAGE Running ant file: C:\Users\CHAOS131\workspace\2017steamworks\Steamworks 2017\build.xml
+
+!ENTRY WPILib_Java_Robot_Development 1 0 2017-02-18 16:03:53.670
+!MESSAGE Targets: deploy, Mode: run

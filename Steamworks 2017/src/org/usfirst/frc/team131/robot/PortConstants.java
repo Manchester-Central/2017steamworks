@@ -2,7 +2,7 @@ package org.usfirst.frc.team131.robot;
 
 public interface PortConstants {
 	
-	boolean isRaftMode = true; // true if raft mode, false if robot mode
+	boolean isRaftMode = false; // true if raft mode, false if robot mode
 	
 	// ROBOT-MODE -------------------------------------------------+
 	//                                                             |                                          |

@@ -3,7 +3,6 @@ package org.usfirst.frc.team131.robot;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Victor;
 
 public class DriveBase {
 
@@ -83,22 +82,22 @@ public class DriveBase {
 	public void driveStraightDistance(double distance) {
 		if (rightEncoder.getDistance() < distance && leftEncoder.getDistance() < distance) {
 			if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) {
-				setSpeed(0.5, 0.0);
+				setSpeed(0.2, 0.0);
 			} else if (leftEncoder.getDistance() - ALLOWANCE > Math.abs(rightEncoder.getDistance())) {
-				setSpeed(0.0, 0.5);
+				setSpeed(0.0, 0.2);
 			} else {
-				setSpeed(0.5, 0.5);
+				setSpeed(0.2, 0.2);
 			}
 		}
 	}
 	
 	public void driveStraight() {
 		if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) {
-			setSpeed(0.5, 0.0);
+			setSpeed(0.2, 0.0);
 		} else if (leftEncoder.getDistance() - ALLOWANCE > Math.abs(rightEncoder.getDistance())) {
-			setSpeed(0.0, 0.5);
+			setSpeed(0.0, 0.2);
 		} else {
-			setSpeed(0.5, 0.5);
+			setSpeed(0.2, 0.2);
 		}
 	}
 
@@ -106,11 +105,11 @@ public class DriveBase {
 	public void driveStraightBackwards(double distance) {
 		if (Math.abs(rightEncoder.getDistance()) < distance && Math.abs(leftEncoder.getDistance()) < distance) {
 			if (Math.abs(leftEncoder.getDistance()) + ALLOWANCE < Math.abs(rightEncoder.getDistance())) {
-				setSpeed(-0.5, 0.0);
+				setSpeed(-0.2, 0.0);
 			} else if (Math.abs(leftEncoder.getDistance()) - ALLOWANCE > Math.abs(rightEncoder.getDistance())) {
-				setSpeed(0.0, -0.5);
+				setSpeed(0.0, -0.2);
 			} else {
-				setSpeed(-0.5, -0.5);
+				setSpeed(-0.2, -0.2);
 			}
 		}
 	}
@@ -131,11 +130,11 @@ public class DriveBase {
 		{
 			if (degrees < 0) 
 			{
-				turnLeft (0.5);
+				turnLeft (0.2);
 			} 
 			else 
 			{
-				turnRight (0.5);
+				turnRight (0.2);
 			}
 		}
 		else
