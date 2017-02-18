@@ -31,10 +31,11 @@ public class Robot extends IterativeRobot {
 	BallIntakeShooter shumper;
 	Compressor compressor;
 	GearFlopper gearFlopper;
-	//SensorController sensor;
-
-	double targetCentroid;
-	final double CAMERA_CENTROID = 20;
+	SensorController SC;
+	
+	private enum State {
+		INITIAL, DO_NOTHING, DRIVE_FORWARD, DRIVE_BACKWARD, PLACE_GEAR, TURN
+	}
 	
 	double offset;
 	
@@ -53,16 +54,16 @@ public class Robot extends IterativeRobot {
 		climber = new Climber ();
 		drive = new DriveBase ();
 		shumper = new BallIntakeShooter ();
+		gearFlopper = new GearFlopper();		
 		table = NetworkTable.getTable("camera");
-		//gearFlopper = new GearFlopper();
-		//sensor = new SensorController();
+		gearFlopper = new GearFlopper();
+		SC = new SensorController ();
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		chooser.addObject("drive forward", driveForward);
 		chooser.addObject("place gear", placeGear);
 		SmartDashboard.putData("Auto choices", chooser);
-		//drive.resetEncoders();
-		//cv.getInstance().startAutomaticCapture();
+		drive.resetEncoders();
 	}
 	
 
@@ -77,6 +78,13 @@ public class Robot extends IterativeRobot {
 	 * switch structure below with additional strings. If using the
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
+	
+	void processOffset () {
+
+		offset = table.getNumber("displacement", Double.POSITIVE_INFINITY); 
+		
+	}
+	
 	@Override
 	public void autonomousInit() {
 		drive.resetEncoders();
@@ -92,16 +100,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		
-		targetCentroid = table.getNumber("targetCentroid", Math.sqrt(-1)); 
-
-		offset = CAMERA_CETROID - targetCentroid;
+		processOffset();
 		
 		switch (autoSelected) {
 		case customAuto:
 			// Put custom auto code here
 			break;
 		case placeGear:
-			auto.placeGear(drive, gearFlopper, 10.0, offset, 20.0);
+			auto.placeGear(drive, gearFlopper, SC, offset, 20.0);
 			break;
 		case driveForward:
 			//auto.driveStraight(drive, 20000.0);
@@ -192,10 +198,84 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic()
 	{
+		
+		// puts the offset to the dashboard
+		SmartDashboard.putNumber("offset", offset);
+		
+		// processes camera centroid offset
+		processOffset();
+		
+		State state = State.INITIAL;
+		
+		double distanceCanOffset = 7;
+		double distToTower = SC.getAnalogUltrasonic();
+		switch (state)
+		{
+			case INITIAL:
+				state = State.TURN;
+				SmartDashboard.putString("Initial", "done");
+				break;
+			case TURN:
+				if (Math.abs(SC.getAnalogUltrasonic()) > distanceCanOffset) {
+				} else {
+					SmartDashboard.putString("Turn", "done");
+					state = state.DRIVE_FORWARD;
+				}
+				break;
+			case DRIVE_FORWARD:
+				SmartDashboard.putString("Drive Forward", "done");
+				break;
+			case PLACE_GEAR:
+				state = State.DO_NOTHING;
+				SmartDashboard.putString("Place Gear", "done");
+			case DO_NOTHING:
+			default:
+				SmartDashboard.putString("Do Nothing", "done");
 
-		shumper.setIntakeSpeed(CO.driver.getLeftY());
-		shumper.setShooterSpeed(CO.driver.getRightY());
-		shumper.setChoiceSpeed(CO.driver.getLeftX());
+		}
+		
+		//
+		if (CO.driver.buttonPressed(Controller.RIGHT_TRIGGER)) {
+			drive.resetEncoders();
+			auto.placeGear(drive, gearFlopper, SC, offset, 20.0);
+		}
+		
+		if (CO.operator.buttonPressed(Controller.RIGHT_BUMPER)) {
+			shumper.shoot();
+		}
+		
+		if (CO.operator.buttonPressed(Controller.RIGHT_TRIGGER)) {
+			shumper.intake();
+		}
+		
+		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		climber.setClimberSpeed(CO.operator.getLeftY());
+		
+		if (CO.operator.buttonPressed(Controller.LEFT_TRIGGER)){
+			gearFlopper.ejectGear(2000L);
+		}
+		
+		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY)){
+			gearFlopper.coverSet(true);
+		}
+		
+		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY)){
+			gearFlopper.coverSet(false);
+		}
+
+		// test code used for testing
+//		shumper.setAgitatorSpeed(CO.operator.getLeftX());
+//		shumper.setBackerSpeed(CO.operator.getRightX());
+//		shumper.setShooterSpeed(CO.operator.getLeftY());
+//		shumper.setIntakeSpeed(CO.operator.getRightY());
+		// automatic cover 
+		if (gearFlopper.gearIsPresent()){
+			gearFlopper.coverSet(true);
+		}
+		else {
+			gearFlopper.coverSet(false);
+		}
 		
 		processStartButton();
 
@@ -203,7 +283,7 @@ public class Robot extends IterativeRobot {
 		
 		processBButton();
 	
-
+// Hola
 	}
 	
 	@Override
@@ -218,5 +298,7 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		
 	}
+
+	
 }
 

@@ -1,66 +1,118 @@
 package org.usfirst.frc.team131.robot;
 
+import java.util.Date;
+
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Victor;
+
+//import edu.wpi.first.wpilibj.DigitalInput;
+//import edu.wpi.first.wpilibj.Solenoid;
+//import edu.wpi.first.wpilibj.Victor;
 
 public class GearFlopper {
 	
-	private Victor gearFlopper;
-	private DigitalInput upperFlopperPosition;
-	private DigitalInput lowerFlopperPosition;
-	private PneumaticActuator upperSolenoid;
-	private PneumaticActuator lowerSolenoid;
+	//private Victor gearFlopper;
+	//private DigitalInput upperFlopperPosition;
+	//private DigitalInput lowerFlopperPosition;
+	private PneumaticActuator gearPusher;
+	private PneumaticActuator gearCover;
+	private PneumaticActuator leftDoor;
+	private PneumaticActuator rightDoor;
 	
-	public PneumaticActuator getUpperSolenoid()
+	DigitalInput gearIn;
+	DigitalInput springIn;
+	
+	boolean pushed;
+	
+	public PneumaticActuator getGearPusherPosition()
 	{
-		return upperSolenoid;
+		return gearPusher;
 	}
 	
-	public PneumaticActuator getLowerSolenoid () 
+	public PneumaticActuator getGearCoverPosition() 
 	{
-		return lowerSolenoid;
+		return gearCover;
 	}
 	
-	public boolean gearIsPresent;
+	public PneumaticActuator getDoorPosition() 
+	{
+		return leftDoor;
+	}
 	
 	public GearFlopper ()  {
-		upperSolenoid = new PneumaticActuator(PortConstants.LOWER_FRONT_PNEUMATIC_CHANNEL, PortConstants.LOWER_BACK_PNEUMATIC_CHANNEL);
+		pushed = false;
 		
-		gearIsPresent = false;
+		gearIn = new DigitalInput(PortConstants.GEAR_SENSOR);
+		springIn = new DigitalInput(PortConstants.SPRING_SENSOR);
+		gearPusher = new PneumaticActuator(PortConstants.GEAR_PUSHER_P_CHANNEL_A, PortConstants.GEAR_PUSHER_P_CHANNEL_B);
 		
-		lowerSolenoid = new PneumaticActuator(PortConstants.UPPER_BACK_PNEUMATIC_CHANNEL, PortConstants.UPPER_FRONT_PNEUMATIC_CHANNEL);
+		gearCover = new PneumaticActuator(PortConstants.GEAR_COVER_P_CHANNEL_A, PortConstants.GEAR_COVER_P_CHANNEL_B);
 		
+		leftDoor = new PneumaticActuator(PortConstants.LEFT_GEAR_DOOR_P_CHANNEL_A, PortConstants.LEFT_GEAR_DOOR_P_CHANNEL_B);
+		rightDoor = new PneumaticActuator(PortConstants.RIGHT_GEAR_DOOR_P_CHANNEL_A, PortConstants.RIGHT_GEAR_DOOR_P_CHANNEL_B);
 	}
 	
 	public void gearPusherSet(boolean state) 
 	{
-		upperSolenoid.set(state);
+		gearPusher.set(state);
+	}
+	
+	public void coverSet (boolean state) 
+	{
+		gearCover.set(state);
 	}
 	
 	public void doorSet (boolean state) 
 	{
-		lowerSolenoid.set(state);
+		leftDoor.set(state);
+		rightDoor.set(state);
 	}
 	
 	public boolean getDoor () {
-		return lowerSolenoid.isActivated();
+		return leftDoor.isActivated();
+	}
+	
+	public boolean getCover () {
+		return gearCover.isActivated();
 	}
 	
 	public boolean getGearPusher () {
-		return upperSolenoid.isActivated();
+		return gearPusher.isActivated();
 	}
 	
-	public void ejectGear () {
+	Date time = new Date ();
+	
+	long firstTime = 0L;
+	
+	// delay is milliseconds	
+	public void ejectGear (long delay) {
+		if (pushed = false) {
+			pushed = true;
+			firstTime = time.getTime();
+		}
 		doorSet (true);
-		gearPusherSet (true);
+		if (firstTime + delay < time.getTime()) {
+			gearPusherSet (true);			
+		}
 	}
-	
-	public void retractGearFlopper () {
-		doorSet (false);
+	// delay is milliseconds
+	public void retractGearFlopper (long delay) {
+		if (pushed = true) {
+			pushed = false;
+			firstTime = time.getTime();
+		}
 		gearPusherSet (false);
+		if (firstTime + delay < time.getTime()) {
+			doorSet (false);			
+		}
 	}
 	
+	public boolean gearIsPresent () {
+		return gearIn.get();
+	}
+	
+	public boolean springActivated () {
+		return springIn.get();
+	}
 	
 }
 

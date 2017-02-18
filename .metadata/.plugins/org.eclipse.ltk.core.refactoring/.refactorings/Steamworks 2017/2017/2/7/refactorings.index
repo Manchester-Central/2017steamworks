@@ -1,2 +1,7 @@
 1487291323821	Rename local variable 'distance'
 1487427609282	Rename enum constant 'DRIVE_BACKWARDS'
+1487432965855	Delete element
+1487433504610	Rename field 'upperSolenoid'
+1487433596453	Rename field 'lowerSolenoid'
+1487436520677	Rename field 'choice'
+1487436543337	Rename method 'setChoiceSpeed'

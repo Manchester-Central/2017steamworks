@@ -80,7 +80,7 @@ public class DriveBase {
 		rightEncoder.reset();
 	}
 
-	public void driveStraight(double distance) {
+	public void driveStraightDistance(double distance) {
 		if (rightEncoder.getDistance() < distance && leftEncoder.getDistance() < distance) {
 			if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) {
 				setSpeed(0.5, 0.0);
@@ -89,6 +89,16 @@ public class DriveBase {
 			} else {
 				setSpeed(0.5, 0.5);
 			}
+		}
+	}
+	
+	public void driveStraight() {
+		if (leftEncoder.getDistance() + ALLOWANCE < rightEncoder.getDistance()) {
+			setSpeed(0.5, 0.0);
+		} else if (leftEncoder.getDistance() - ALLOWANCE > Math.abs(rightEncoder.getDistance())) {
+			setSpeed(0.0, 0.5);
+		} else {
+			setSpeed(0.5, 0.5);
 		}
 	}
 

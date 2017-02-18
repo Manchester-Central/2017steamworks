@@ -1,9 +1,11 @@
 package org.usfirst.frc.team131.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class AutoController {
 	
 	private enum State {
-		INITIAL, DO_NOTHING, DRIVE_FORWARD, DRIVE_BACKWARD, PLACE_GEAR, TURN
+		INITIAL, DO_NOTHING, DRIVE_FORWARD, DRIVE_BACKWARD, PLACE_GEAR, TURN, DRIVE_FORWARD_TWO, TURN_TWO
 	}
 	
 	State state = State.INITIAL;
@@ -17,7 +19,7 @@ public class AutoController {
 				state = State.DRIVE_FORWARD;
 				break;
 			case DRIVE_FORWARD:
-				drive.driveStraight(distance);
+				drive.driveStraightDistance(distance);
 				if (drive.getLeftWheelDistance() >= distance) 
 				{
 					state = State.DO_NOTHING;
@@ -32,14 +34,17 @@ public class AutoController {
 	}
 	
 	// Drives(backwards) and Places Gear 
-	public void placeGear (DriveBase drive, GearFlopper gearFlopper, double distance, double distanceOffset, double distanceCanOffset)
+	public void placeGear (DriveBase drive, GearFlopper gearFlopper, SensorController sensor, double distanceOffset, double distanceCanOffset)
 	{
+		String s;
 		switch (state)
 		{
 			case INITIAL:
+				s = "initial";
 				state = State.TURN;
 				break;
 			case TURN:
+				s = "turn";
 				if (Math.abs(distanceOffset) > distanceCanOffset) {
 					if (distanceOffset < 0) {
 						drive.turnLeft(0.5);
@@ -47,32 +52,36 @@ public class AutoController {
 						drive.turnRight(0.5);
 					}
 				} else {
-					state = state.DRIVE_FORWARD;
+					state = state.DRIVE_FORWARD_TWO;
 				}
 				break;
 			case DRIVE_FORWARD:
-				drive.driveStraight(distance);
-				if (drive.getLeftWheelDistance() >= distance)
+				s = "drive forward";
+				drive.driveStraight();
+				if (gearFlopper.springActivated())
 				{
 					state = State.PLACE_GEAR;
 				}
 				break;
 			case PLACE_GEAR:
-				if (gearFlopper.gearIsPresent == false) 
+				s = "place gear";
+				if (gearFlopper.gearIsPresent() == false) 
 				{
-					gearFlopper.retractGearFlopper();
+					gearFlopper.retractGearFlopper(2000L);
 					state = State.DO_NOTHING;
 				}
 				else 
 				{
-					gearFlopper.ejectGear();
+					gearFlopper.ejectGear(2000L);
 				}
 			case DO_NOTHING:
 			default:
+				s = "do nothing";
 				drive.setSpeed(0.0, 0.0);
-				gearFlopper.retractGearFlopper();
+				gearFlopper.retractGearFlopper(2000L);
 
 		}
+		SmartDashboard.putString("auto state", s);
 	}
 	
 }

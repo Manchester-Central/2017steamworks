@@ -1,0 +1,57 @@
+package org.usfirst.frc.team131.robot;
+
+public class GearCover {
+	private PneumaticActuator upperSolenoid;
+	private PneumaticActuator lowerSolenoid;
+	
+	public PneumaticActuator getUpperSolenoid()
+	{
+		return upperSolenoid;
+	}
+	
+	public PneumaticActuator getLowerSolenoid () 
+	{
+		return lowerSolenoid;
+	}
+	
+	public GearCover ()  {
+		upperSolenoid = new PneumaticActuator(PortConstants.LOWER_FRONT_PNEUMATIC_CHANNEL, PortConstants.LOWER_BACK_PNEUMATIC_CHANNEL);
+		
+		gearIsPresent = false;
+		
+		lowerSolenoid = new PneumaticActuator(PortConstants.UPPER_BACK_PNEUMATIC_CHANNEL, PortConstants.UPPER_FRONT_PNEUMATIC_CHANNEL);
+		
+	}
+	
+	public void gearPusherSet(boolean state) 
+	{
+		upperSolenoid.set(state);
+	}
+	
+	public void doorSet (boolean state) 
+	{
+		lowerSolenoid.set(state);
+	}
+	
+	public boolean getDoor () {
+		return lowerSolenoid.isActivated();
+	}
+	
+	public boolean getGearPusher () {
+		return upperSolenoid.isActivated();
+	}
+	
+	public void ejectGear () {
+		doorSet (true);
+		gearPusherSet (true);
+	}
+	
+	public void retractGearFlopper () {
+		doorSet (false);
+		gearPusherSet (false);
+	}
+	
+	
+}
+
+}

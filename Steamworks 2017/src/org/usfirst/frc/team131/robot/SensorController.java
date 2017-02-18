@@ -9,7 +9,6 @@ public class SensorController {
 	private Ultrasonic vexUltrasonic;
 	
 	private AnalogInput analogUltrasonic;
-	
 
 	private DigitalInput leftOpticalSensor;
 	private DigitalInput rightOpticalSensor;
@@ -19,8 +18,8 @@ public class SensorController {
 	
 		
 		analogUltrasonic = new AnalogInput(PortConstants.ANALOG_ULTRASONIC_SENSOR);
-		leftOpticalSensor = new DigitalInput(PortConstants.LEFT_OPTICAL_SENSOR);
-		rightOpticalSensor = new DigitalInput(PortConstants.RIGHT_OPTICAL_SENSOR);
+		//leftOpticalSensor = new DigitalInput(PortConstants.LEFT_OPTICAL_SENSOR);
+		//rightOpticalSensor = new DigitalInput(PortConstants.RIGHT_OPTICAL_SENSOR);
 		
 		
 	}
@@ -36,12 +35,12 @@ public class SensorController {
 	
 
 	
-	public boolean getleftOptical () {
-		return leftOpticalSensor.get();
-	}
+	//public boolean getleftOptical () {
+		//return leftOpticalSensor.get();
+	//}
 	
-	public boolean getRightOptical () {
-		return rightOpticalSensor.get();
-	}
+	//public boolean getRightOptical () {
+		//return rightOpticalSensor.get();
+	//}
 	
 }
