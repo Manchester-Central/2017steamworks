@@ -3,6 +3,7 @@ package org.usfirst.frc.team131.robot;
 import java.util.Date;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 //import edu.wpi.first.wpilibj.DigitalInput;
 //import edu.wpi.first.wpilibj.Solenoid;
@@ -13,96 +14,75 @@ public class GearFlopper {
 	//private Victor gearFlopper;
 	//private DigitalInput upperFlopperPosition;
 	//private DigitalInput lowerFlopperPosition;
-	private PneumaticActuator gearPusher;
-	private PneumaticActuator gearCover;
-	private PneumaticActuator leftDoor;
-	private PneumaticActuator rightDoor;
+	private DoubleSolenoid gearPusher;
+	private DoubleSolenoid gearCover;
+	private DoubleSolenoid door;
 	
 	DigitalInput gearIn;
 	DigitalInput springIn;
 	
-	boolean pushed;
-	
-	public PneumaticActuator getGearPusherPosition()
-	{
-		return gearPusher;
-	}
-	
-	public PneumaticActuator getGearCoverPosition() 
-	{
-		return gearCover;
-	}
-	
-	public PneumaticActuator getDoorPosition() 
-	{
-		return leftDoor;
-	}
+	boolean isEjected;
 	
 	public GearFlopper ()  {
-		pushed = false;
+		isEjected = false;
 		
 		gearIn = new DigitalInput(PortConstants.GEAR_SENSOR);
 		springIn = new DigitalInput(PortConstants.SPRING_SENSOR);
-		gearPusher = new PneumaticActuator(PortConstants.GEAR_PUSHER_P_CHANNEL_A, PortConstants.GEAR_PUSHER_P_CHANNEL_B);
 		
-		gearCover = new PneumaticActuator(PortConstants.GEAR_COVER_P_CHANNEL_A, PortConstants.GEAR_COVER_P_CHANNEL_B);
+		gearPusher = new DoubleSolenoid(PortConstants.GEAR_PUSHER_P_CHANNEL_A, PortConstants.GEAR_PUSHER_P_CHANNEL_B);
 		
-		leftDoor = new PneumaticActuator(PortConstants.LEFT_GEAR_DOOR_P_CHANNEL_A, PortConstants.LEFT_GEAR_DOOR_P_CHANNEL_B);
-		rightDoor = new PneumaticActuator(PortConstants.RIGHT_GEAR_DOOR_P_CHANNEL_A, PortConstants.RIGHT_GEAR_DOOR_P_CHANNEL_B);
+		gearCover = new DoubleSolenoid(PortConstants.GEAR_COVER_P_CHANNEL_A, PortConstants.GEAR_COVER_P_CHANNEL_B);
+		
+		door = new DoubleSolenoid(PortConstants.GEAR_DOOR_P_CHANNEL_A, PortConstants.GEAR_DOOR_P_CHANNEL_B);
 	}
 	
-	public void gearPusherSet(boolean state) 
+	public void gearPusherSet(DoubleSolenoid.Value state) 
 	{
 		gearPusher.set(state);
 	}
 	
-	public void coverSet (boolean state) 
+	public void coverSet (DoubleSolenoid.Value state) 
 	{
 		gearCover.set(state);
 	}
 	
-	public void doorSet (boolean state) 
+	public void doorSet (DoubleSolenoid.Value state) 
 	{
-		leftDoor.set(state);
-		rightDoor.set(state);
+		door.set(state);
 	}
 	
-	public boolean getDoor () {
-		return leftDoor.isActivated();
+	public DoubleSolenoid.Value getDoor () {
+		return door.get();
 	}
 	
-	public boolean getCover () {
-		return gearCover.isActivated();
+	public DoubleSolenoid.Value getCover () {
+		return gearCover.get();
 	}
 	
-	public boolean getGearPusher () {
-		return gearPusher.isActivated();
+	public DoubleSolenoid.Value getGearPusher () {
+		return gearPusher.get();
 	}
 	
-	Date time = new Date ();
+
 	
 	long firstTime = 0L;
 	
 	// delay is milliseconds	
-	public void ejectGear (long delay) {
-		if (pushed = false) {
-			pushed = true;
-			firstTime = time.getTime();
-		}
-		doorSet (true);
-		if (firstTime + delay < time.getTime()) {
-			gearPusherSet (true);			
-		}
+	public void ejectGear () {
+		doorSet (DoubleSolenoid.Value.kForward);
+		gearPusherSet (DoubleSolenoid.Value.kForward);
+		isEjected = true;
 	}
 	// delay is milliseconds
 	public void retractGearFlopper (long delay) {
-		if (pushed = true) {
-			pushed = false;
+		Date time = new Date ();
+		if (isEjected == true) {
+			isEjected = false;
 			firstTime = time.getTime();
 		}
-		gearPusherSet (false);
+		gearPusherSet (DoubleSolenoid.Value.kReverse);
 		if (firstTime + delay < time.getTime()) {
-			doorSet (false);			
+			doorSet (DoubleSolenoid.Value.kReverse);			
 		}
 	}
 	

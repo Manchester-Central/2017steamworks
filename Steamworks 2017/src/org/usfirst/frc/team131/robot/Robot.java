@@ -1,7 +1,9 @@
 package org.usfirst.frc.team131.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,7 @@ public class Robot extends IterativeRobot {
 	final String placeGear = "place gear";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	Relay visageEmolator;
 	NetworkTable table;
 	Climber climber;
 	ControllerOverseer CO;
@@ -30,7 +33,6 @@ public class Robot extends IterativeRobot {
 	BallIntakeShooter shumper;
 	Compressor compressor;
 	GearFlopper gearFlopper;
-	SensorController SC;
 	
 	double offset;
 	
@@ -42,6 +44,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		visageEmolator = new Relay (0);
 		auto = new AutoController ();
 		compressorIsManuallyStopped = false;
 		compressor = new Compressor(1);
@@ -51,8 +54,7 @@ public class Robot extends IterativeRobot {
 		shumper = new BallIntakeShooter ();
 		gearFlopper = new GearFlopper();		
 		table = NetworkTable.getTable("camera");
-		gearFlopper = new GearFlopper();
-		SC = new SensorController ();
+		gearFlopper.retractGearFlopper(2000L);
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		chooser.addObject("drive forward", driveForward);
@@ -83,10 +85,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		drive.resetEncoders();
-		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
+//		autoSelected = chooser.getSelected();
+//		 autoSelected = SmartDashboard.getString("Auto Selector",
+//		 defaultAuto);
+//		System.out.println("Auto selected: " + autoSelected);
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class Robot extends IterativeRobot {
 			// Put custom auto code here
 			break;
 		case placeGear:
-			auto.placeGear(drive, gearFlopper, SC, offset, 20.0);
+			auto.placeGear(drive, gearFlopper, offset, 20.0, 0.0);
 			break;
 		case driveForward:
 			//auto.driveStraight(drive, 20000.0);
@@ -114,146 +116,112 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	boolean compressorState = false;
+//	boolean compressorState = false;
 	
-	//boolean upperSolenoidState = false;
-	
-	//boolean lowerSolenoidState = false;
-	
-	// toggle compressor logic
-	public void processStartButton () 
-	{
-		if (CO.driver.buttonPressed(Controller.START_BUTTON))
-		{
-			if (compressorState == compressor.enabled())
-			{	
-				if (compressorState == false)
-				{
-					compressor.start();
-				}
-				else
-				{
-					compressor.stop();
-				}
-			}
-		}
-		else
-		{
-			compressorState = compressor.enabled();
-		}
-	}
-	
-	
-//	private void processAButton()
+//	toggle compressor logic
+//	void processStartButton () 
 //	{
-//		if (CO.driver.buttonPressed(Controller.DOWN_A_ABXY))
+//		if (CO.driver.buttonPressed(Controller.START_BUTTON))
 //		{
-//			if (upperSolenoidState == gearFlopper.getGearPusher())
+//			if (compressorState == compressor.enabled())
 //			{	
-//				if (upperSolenoidState == false)
+//				if (compressorState == false)
 //				{
-//					gearFlopper.gearPusherSet(true);
+//					compressor.start();
 //				}
 //				else
 //				{
-//					gearFlopper.gearPusherSet(false);
+//					compressor.stop();
 //				}
 //			}
 //		}
 //		else
 //		{
-//			upperSolenoidState = gearFlopper.getGearPusher();
+//			compressorState = compressor.enabled();
 //		}
 //	}
 //	
-//	public void processBButton () 
-//	{
-//		if (CO.driver.buttonPressed(Controller.RIGHT_B_ABXY))
-//		{
-//			if (lowerSolenoidState == gearFlopper.getDoor())
-//			{	
-//				if (lowerSolenoidState == false)
-//				{
-//					gearFlopper.doorSet(true);
-//				}
-//				else
-//				{
-//					gearFlopper.doorSet(false);
-//				}
-//			}
-//		}
-//		else
-//		{
-//			lowerSolenoidState = gearFlopper.getDoor();
-//		}
-//	}
 	
 	/**
 	 * This function is called periodically during operator control
 	 */
 	@Override
-	public void teleopPeriodic()
+	public void teleopInit()
 	{
 		
+	}
+	
+	public void teleopPeriodic()
+	{
+		// processes camera centroid offset
+		processOffset();
 		
 		// puts the offset to the dashboard
 		SmartDashboard.putNumber("offset", offset);
 		
-		// processes camera centroid offset
-		processOffset();
-		
 		// auto places the gear
 		if (CO.driver.buttonPressed(Controller.RIGHT_TRIGGER)) {
 			drive.resetEncoders();
-			auto.placeGear(drive, gearFlopper, SC, offset, 20.0);
+			auto.placeGear(drive, gearFlopper, offset, 30.0, 0.0);
+		}
+		visageEmolator.set(Relay.Value.kForward);
+		// for the physiognomy transmogufier		//the light
+//		if (CO.operator.buttonPressed(Controller.SELECT_BUTTON)) {
+//			visageEmolator.set(Relay.Value.kForward);
+//		} else {
+//			visageEmolator.set(Relay.Value.kOff);
+//		}
+		
+		//compressor regulation
+		if (CO.operator.buttonPressed(Controller.START_BUTTON)) {
+			compressor.stop();
+		} else if (compressor.enabled() == false) {
+			compressor.start();
 		}
 		
 		// shoots the with the shumper
 		if (CO.operator.buttonPressed(Controller.RIGHT_BUMPER)) {
 			shumper.shoot();
-		}
-		
-		// intakes with the shumper
-		if (CO.operator.buttonPressed(Controller.RIGHT_TRIGGER)) {
+		} else if (CO.operator.buttonPressed(Controller.RIGHT_TRIGGER)) {// intakes with the shumper
 			shumper.intake();
+		} else {
+			shumper.stop();
 		}
-		
 		// sets drive speed
 		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
 		
 		//sets climber speed
 		climber.setClimberSpeed(CO.operator.getLeftY());
 		
-		//ejects gear
-		if (CO.operator.buttonPressed(Controller.LEFT_TRIGGER)){
-			gearFlopper.ejectGear(2000L);
+		//ejects gear 		// Uses the spring sensor to auto place gear
+		if (gearFlopper.springActivated() == true || CO.operator.buttonPressed(Controller.LEFT_TRIGGER)) {
+			gearFlopper.ejectGear();
+		} else {
+			gearFlopper.retractGearFlopper(500L);
 		}
 		
-		//unsheaths cover
+		//cover positioning
 		if (CO.operator.buttonPressed(Controller.RIGHT_B_ABXY)){
-			gearFlopper.coverSet(false);
+			//unsheaths cover
+			gearFlopper.coverSet(DoubleSolenoid.Value.kForward);
+		} else if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY)){
+			//sheaths cover
+			gearFlopper.coverSet(DoubleSolenoid.Value.kReverse);
+		} else {
+			//
+			if (gearFlopper.gearIsPresent() == true) {
+				gearFlopper.coverSet(DoubleSolenoid.Value.kForward);
+			} else {
+				gearFlopper.coverSet(DoubleSolenoid.Value.kReverse);
+			}
 		}
 		
-		//sheaths cover
-		if (CO.operator.buttonPressed(Controller.DOWN_A_ABXY)){
-			gearFlopper.coverSet(true);
-		}
+		SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
+		SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
 
-		// test code used for testing
-//		shumper.setAgitatorSpeed(CO.operator.getLeftX());
-//		shumper.setBackerSpeed(CO.operator.getRightX());
-//		shumper.setShooterSpeed(CO.operator.getLeftY());
-//		shumper.setIntakeSpeed(CO.operator.getRightY());
-		// automatic cover 
-		if (gearFlopper.gearIsPresent()){
-			gearFlopper.coverSet(true);
-		}
-		else {
-			gearFlopper.coverSet(false);
-		}
 		
 		// toggles the compressor
-		processStartButton();
+//		processStartButton();
 
 		
 		//processAButton();
@@ -265,7 +233,8 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void disabledPeriodic () {
-		
+		SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
+		SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
 	}
 
 	/**

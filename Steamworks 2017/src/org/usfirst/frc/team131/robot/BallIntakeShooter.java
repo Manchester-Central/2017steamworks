@@ -5,35 +5,35 @@ import edu.wpi.first.wpilibj.SpeedController;
 
 public class BallIntakeShooter {
 	
-	SpeedController intake;
-	SpeedController shooter;
-	SpeedController backer;
+	SpeedController front;
+	SpeedController back;
+	SpeedController top;
 	SpeedController agitator;
 	
 	
 	public BallIntakeShooter() {
 		
-		intake = new Spark(PortConstants.INTAKE_SPARK_PORT);
-		shooter = new Spark(PortConstants.SHOOTER_SPARK_PORT);
-		backer = new Spark(PortConstants.CHOICE_ROLLER_PORT);
-		agitator = new Spark(PortConstants.AGITATOR_IS_BACK);
+		front = new Spark(PortConstants.FRONT_SPARK_PORT);
+		back = new Spark(PortConstants.BACK_SPARK_PORT);
+		top = new Spark(PortConstants.TOP_SPARK_PORT);
+		agitator = new Spark(PortConstants.AGITATOR_SPARK_PORT);
 		
 	}
 	
 	// sets the speed of each speed controller
-		public void setIntakeSpeed (double speed) {
-			intake.set(speed);
+		public void setFrontSpeed (double speed) {
+			front.set(speed);
 			
 		}
 	// sets the speed of each speed controller
-		public void setShooterSpeed (double speed) {
-			shooter.set(speed);
+		public void setBackSpeed (double speed) {
+			back.set(speed);
 			
 		}
 		
 	// sets the speed of each speed controller
-		public void setBackerSpeed (double speed) {
-			backer.set(speed);
+		public void setTopSpeed (double speed) {
+			top.set(speed);
 			
 		}
 	// 
@@ -42,17 +42,23 @@ public class BallIntakeShooter {
 		}
 		
 		public void shoot () {
-			setShooterSpeed (1.0);
-			setIntakeSpeed (1.0);
-			setBackerSpeed (0.0);
+			setBackSpeed (1.0);
+			setFrontSpeed (-1.0);
+			setTopSpeed (-1.0);
 			setAgitatorSpeed(1.0);
 		}
 		
 		public void intake () {
-			setShooterSpeed (-1.0);
-			setIntakeSpeed (1.0);
-			setBackerSpeed (1.0);
-			setAgitatorSpeed(1.0);
+			setBackSpeed (0.0);
+			setFrontSpeed (-1.0);
+			setTopSpeed (1.0);
+			setAgitatorSpeed(0.0);
 		}
 		
+		public void stop () {
+			setBackSpeed (0.0);
+			setFrontSpeed (0.0);
+			setTopSpeed (0.0);
+			setAgitatorSpeed(0.0);
+		}
 }

@@ -1,0 +1,64 @@
+package org.usfirst.frc.team131.robot;
+
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
+
+public class BallIntakeShooter {
+	
+	SpeedController front;
+	SpeedController back;
+	SpeedController top;
+	SpeedController agitator;
+	
+	
+	public BallIntakeShooter() {
+		
+		front = new Spark(PortConstants.INTAKE_SPARK_PORT);
+		back = new Spark(PortConstants.SHOOTER_SPARK_PORT);
+		top = new Spark(PortConstants.CHOICE_ROLLER_PORT);
+		agitator = new Spark(PortConstants.AGITATOR_IS_BACK);
+		
+	}
+	
+	// sets the speed of each speed controller
+		public void setFrontSpeed (double speed) {
+			front.set(speed);
+			
+		}
+	// sets the speed of each speed controller
+		public void setBackSpeed (double speed) {
+			back.set(speed);
+			
+		}
+		
+	// sets the speed of each speed controller
+		public void setTopSpeed (double speed) {
+			top.set(speed);
+			
+		}
+	// 
+		public void setAgitatorSpeed (double speed) {
+			agitator.set(speed);
+		}
+		
+		public void shoot () {
+			setBackSpeed (0.3);
+			setFrontSpeed (-0.3);
+			setTopSpeed (-0.3);
+			setAgitatorSpeed(0.3);
+		}
+		
+		public void intake () {
+			setBackSpeed (-1.0);
+			setFrontSpeed (1.0);
+			setTopSpeed (1.0);
+			setAgitatorSpeed(1.0);
+		}
+		
+		public void stop () {
+			setBackSpeed (0.0);
+			setFrontSpeed (0.0);
+			setTopSpeed (0.0);
+			setAgitatorSpeed(0.0);
+		}
+}

@@ -1,0 +1,14 @@
+1487529291617	Rename field 'backer'
+1487529312589	Rename method 'setBackerSpeed'
+1487529559687	Rename field 'shooter'
+1487529776363	Rename method 'setIntakeSpeed'
+1487529801424	Rename field 'intake'
+1487530412795	Rename field 'SHOOTER_SPARK_PORT'
+1487530431157	Rename field 'INTAKE_SPARK_PORT'
+1487530443720	Rename field 'CHOICE_ROLLER_PORT'
+1487530463403	Rename field 'AGITATOR_IS_BACK'
+1487530475459	Rename field 'TOP_ROLLER_PORT'
+1487530493762	Rename field '_IS_BACK'
+1487535790307	Delete element
+1487538700766	Rename field 'pushed'
+1487541144237	Delete element
