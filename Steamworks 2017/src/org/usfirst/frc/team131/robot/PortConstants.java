@@ -19,13 +19,13 @@ public interface PortConstants {
 	int GEAR_DOOR_P_CHANNEL_B         /*---*/ = isRaftMode ? -1  : 6;
 	
 	//CAN constants
-	int RIGHT_FRONT_TALON		            = isRaftMode ? -1  :  12;
-	int RIGHT_MID_TALON			            = isRaftMode ? -1  :  14;
-	int RIGHT_BACK_TALON		            = isRaftMode ? -1  :  16;
+	int RIGHT_FRONT_TALON		            = isRaftMode ? -1  :  15;
+	int RIGHT_MID_TALON			            = isRaftMode ? -1  :  13;
+	int RIGHT_BACK_TALON		            = isRaftMode ? -1  :  11;
 	
-	int LEFT_FRONT_TALON		            = isRaftMode ? -1  :  15;
-	int LEFT_MID_TALON		    	        = isRaftMode ? -1  :  13; 	
-	int LEFT_BACK_TALON		   	 	        = isRaftMode ? -1  :  11;
+	int LEFT_FRONT_TALON		            = isRaftMode ? -1  :  12;
+	int LEFT_MID_TALON		    	        = isRaftMode ? -1  :  14; 	
+	int LEFT_BACK_TALON		   	 	        = isRaftMode ? -1  :  16;
 
 	int FRONT_SPARK_PORT				       = isRaftMode ? 6 :  3;
 	int BACK_SPARK_PORT				       = isRaftMode ? 7 :  2;

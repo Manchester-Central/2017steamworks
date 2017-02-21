@@ -3,9 +3,9 @@ package org.usfirst.frc.team131.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -19,14 +19,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	AutoController auto;
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
-	final String driveForward = "drive forward";
-	final String placeGear = "place gear";
-	String autoSelected;
-	SendableChooser<String> chooser = new SendableChooser<>();
-	Relay visageEmolator;
-	NetworkTable table;
+//	final String defaultAuto = "Default";
+//	final String customAuto = "My Auto";
+//	final String driveForward = "drive forward";
+//	final String placeGear = "place gear";
+//	String autoSelected;
+//	SendableChooser<String> chooser = new SendableChooser<>();
+	Relay cameraLED;
 	Climber climber;
 	ControllerOverseer CO;
 	DriveBase drive;
@@ -44,23 +43,24 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		visageEmolator = new Relay (0);
-		auto = new AutoController ();
+		cameraLED = new Relay (0);
 		compressorIsManuallyStopped = false;
-		compressor = new Compressor(1);
+		compressor = new Compressor();
 		CO = new ControllerOverseer ();
 		climber = new Climber ();
 		drive = new DriveBase ();
 		shumper = new BallIntakeShooter ();
 		gearFlopper = new GearFlopper();		
-		table = NetworkTable.getTable("camera");
-		gearFlopper.retractGearFlopper(2000L);
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
-		chooser.addObject("drive forward", driveForward);
-		chooser.addObject("place gear", placeGear);
-		SmartDashboard.putData("Auto choices", chooser);
+		gearFlopper.retractGearFlopper();
+		auto = new AutoController (drive, gearFlopper);
+//		chooser.addDefault("Default Auto", defaultAuto);
+//		chooser.addObject("My Auto", customAuto);
+//		chooser.addObject("drive forward", driveForward);
+//		chooser.addObject("place gear", placeGear);
+//		SmartDashboard.putData("Auto choices", chooser);
 		drive.resetEncoders();
+		auto.setUpDashboard();
+		compressor.start();
 	}
 	
 
@@ -76,19 +76,17 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	
-	void processOffset () {
-
-		offset = table.getNumber("displacement", Double.POSITIVE_INFINITY); 
-		
-	}
+	
 	
 	@Override
 	public void autonomousInit() {
+
 		drive.resetEncoders();
 //		autoSelected = chooser.getSelected();
 //		 autoSelected = SmartDashboard.getString("Auto Selector",
 //		 defaultAuto);
 //		System.out.println("Auto selected: " + autoSelected);
+		auto.reset();
 	}
 
 	/**
@@ -97,23 +95,25 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		
-		processOffset();
-		
-		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case placeGear:
-			auto.placeGear(drive, gearFlopper, offset, 20.0, 0.0);
-			break;
-		case driveForward:
-			//auto.driveStraight(drive, 20000.0);
-			break;
-		case defaultAuto:
-		default:
-			// Put default auto code here
-			break;
-		}
+		drive.displayDriveBaseStats();
+	
+		auto.run();
+//		switch (autoSelected) {
+//		case customAuto:
+//			// Put custom auto code here
+//			break;
+//		case placeGear:
+//			auto.placeGear(drive, gearFlopper, offset, 20.0, 0.0);
+//			break;
+//		case driveForward:
+//			//auto.driveStraight(drive, 20000.0);
+//			break;
+//		case defaultAuto:
+//		default:
+//			// Put default auto code here
+//			break;
+//		}
+
 	}
 
 //	boolean compressorState = false;
@@ -148,36 +148,33 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit()
 	{
-		
 	}
 	
 	public void teleopPeriodic()
 	{
-		// processes camera centroid offset
-		processOffset();
-		
+		drive.displayDriveBaseStats();
 		// puts the offset to the dashboard
-		SmartDashboard.putNumber("offset", offset);
+		//SmartDashboard.putNumber("offset", offset);
 		
 		// auto places the gear
 		if (CO.driver.buttonPressed(Controller.RIGHT_TRIGGER)) {
 			drive.resetEncoders();
-			auto.placeGear(drive, gearFlopper, offset, 30.0, 0.0);
+			//auto.placeGear(drive, gearFlopper, offset, 30.0, 0.0);
 		}
-		visageEmolator.set(Relay.Value.kForward);
+		cameraLED.set(Relay.Value.kForward);
 		// for the physiognomy transmogufier		//the light
-//		if (CO.operator.buttonPressed(Controller.SELECT_BUTTON)) {
-//			visageEmolator.set(Relay.Value.kForward);
-//		} else {
-//			visageEmolator.set(Relay.Value.kOff);
-//		}
+	    if (CO.operator.buttonPressed(Controller.LEFT_X_ABXY)) {
+	    	cameraLED.set(Relay.Value.kForward);
+		} else {
+			cameraLED.set(Relay.Value.kOff);
+		}
 		
 		//compressor regulation
-		if (CO.operator.buttonPressed(Controller.START_BUTTON)) {
+		/*if (CO.operator.buttonPressed(Controller.UP_Y_ABXY)) {
 			compressor.stop();
 		} else if (compressor.enabled() == false) {
 			compressor.start();
-		}
+		}*/
 		
 		// shoots the with the shumper
 		if (CO.operator.buttonPressed(Controller.RIGHT_BUMPER)) {
@@ -197,7 +194,7 @@ public class Robot extends IterativeRobot {
 		if (gearFlopper.springActivated() == true || CO.operator.buttonPressed(Controller.LEFT_TRIGGER)) {
 			gearFlopper.ejectGear();
 		} else {
-			gearFlopper.retractGearFlopper(500L);
+			gearFlopper.retractGearFlopper();
 		}
 		
 		//cover positioning
@@ -216,8 +213,12 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		
-		SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
-		SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
+		if (CO.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+			drive.followLight();
+		}
+		
+		//SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
+		//SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
 
 		
 		// toggles the compressor
@@ -233,8 +234,10 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void disabledPeriodic () {
-		SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
-		SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
+		SmartDashboard.putString("Gear In", Boolean.toString(gearFlopper.gearIsPresent()));
+		SmartDashboard.putString("Spring In", Boolean.toString(gearFlopper.springActivated()));
+		drive.displayDriveBaseStats();
+		
 	}
 
 	/**

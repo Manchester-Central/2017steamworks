@@ -69,19 +69,30 @@ public class GearFlopper {
 	
 	// delay is milliseconds	
 	public void ejectGear () {
+		Date time = new Date ();
+		if (isEjected == false) {
+			isEjected = true;
+			firstTime = time.getTime();
+		}
 		doorSet (DoubleSolenoid.Value.kForward);
-		gearPusherSet (DoubleSolenoid.Value.kForward);
-		isEjected = true;
+		//isEjected = true;
+		if (firstTime + 1250 < time.getTime()) {
+			gearPusherSet (DoubleSolenoid.Value.kReverse);			
+		}
+		else if (firstTime + 250 < time.getTime()){
+			gearPusherSet (DoubleSolenoid.Value.kForward);
+		}
+
 	}
 	// delay is milliseconds
-	public void retractGearFlopper (long delay) {
+	public void retractGearFlopper () {
 		Date time = new Date ();
 		if (isEjected == true) {
 			isEjected = false;
 			firstTime = time.getTime();
 		}
 		gearPusherSet (DoubleSolenoid.Value.kReverse);
-		if (firstTime + delay < time.getTime()) {
+		if (firstTime + 2000 < time.getTime()) {
 			doorSet (DoubleSolenoid.Value.kReverse);			
 		}
 	}
