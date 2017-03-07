@@ -1,0 +1,34 @@
+Syntax (In text file):
+	string "/Preferences/Auto Stage X"="State;Condition\x3DValue"
+		('\x3D' represents the '=' character)
+		X = the number of the stage; the order sequence value
+		State = the actions which the robot will perform
+		Conditions = the means that must be met to get out of the State
+		Value = the value for the conditions
+Syntax (In Dashboard):
+	Auto Stage X    |   State;Condition=value   |   String
+		X = the number of the stage; the order sequence value
+		State = the actions which the robot will perform
+		Conditions = the means that must be met to get out of the State
+		Value = the value for the conditions
+States:
+	Straight drive = "forward"
+	Turn = "right" (will turn right if not given explicit "distanceAngle" condition with negative value)
+	Wait = "wait"
+	Light Follow = "follow"
+	Retract Gear = "retract"
+	Do Nothing = "none"
+Condition:
+	Distance = "distance=value" [value is a distance value in inches] 
+	Time = "time=value" [value is a time in milliseconds]
+	Gyro Angle = "angle=value" [value is an angle in degrees where right is positive and left is negative]
+	Encoder Angle = "distanceAngle=value" [value is an anglein degrees where right is positive and left is negative]
+	None = "none=none"
+Examples:
+	string "/Preferences/Auto Stage 1"="forward;distance\x3D75"
+	string "/Preferences/Auto Stage 2"="wait;time\x3D1500"
+	string "/Preferences/Auto Stage 3"="retract;none=none"
+	string "/Preferences/Auto Stage 4"="forward;distance\x3D-30"
+	string "/Preferences/Auto Stage 4"="forward;distance\x3D-30"
+	string "/SmartDashboard/autoSelection"="blah"
+
