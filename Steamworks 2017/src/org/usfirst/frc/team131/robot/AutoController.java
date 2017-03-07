@@ -18,23 +18,34 @@ public class AutoController {
 	int stage = 1;
 	ICondition currentCondition;
 	String currentVariable;
+	DriveBase drive;
 	
-	public AutoController(DriveBase drive, GearFlopper gear){
+	final int INITIAL = 0;
+	final int FOLLOWING = 1;
+	final int PLACE_GEAR = 2;
+	final int BACK_OFF = 3;
+	final int NOTHING = 4;
+	int state = INITIAL;
+	
+	final double CONTINUAL_DRIVE = 1000000.0;
+	
+	public AutoController(DriveBase passedDrive , GearFlopper gear, BallIntakeShooter shumper){
+		this.drive = passedDrive;
 		states.put("forward", new DriveForward(drive));
-		states.put("backward", new DriveBackward(drive));
 		states.put("right", new TurnRight(drive));
-		states.put("left", new TurnLeft(drive));
 		states.put("wait", new Wait());
 		states.put("follow", new LightFollow(drive));
 		states.put("none", new DoNothing());
-		states.put("eject", new PlaceGear(gear));
+//		states.put("eject", new PlaceGear(gear));
 		states.put("retract", new RetractGear(gear));
-		
+		states.put("shoot", new Shoot(shumper));
+//		
 		conditions.put("distance", new Distance(drive));
 		conditions.put("time", new Time());
 		conditions.put("angle", new Angle(drive));
-		conditions.put("gearin", new GearIn(gear));
 		conditions.put("none", new None());
+		conditions.put("distanceAngle", new EncoderAngle (drive));
+		conditions.put("gearout", new GearIn(gear));
 		conditions.put("springin", new SpringIn(gear));
 		prefs = Preferences.getInstance();
 	}
@@ -82,9 +93,19 @@ public class AutoController {
 				return;
 			}
 			currentCondition.init(currentVariable);
-			SmartDashboard.putString("AutoController test", SmartDashboard.getString("AutoController test", "") + currentStageString);
 			
+			if (currentStageArgs[1].equals("distanceAngle") == false && currentStageArgs[1].equals("distance") == false) {
+				//System.out.println("within neither distanceAngle or distance and state = " + currentStageArgs[0]);
+				if (currentStageArgs[0].equals("forward")) {
+					drive.setTargetInches(CONTINUAL_DRIVE, CONTINUAL_DRIVE);
+					//System.out.println("within forward state");
+				} else if (currentStageArgs[0].equals("right")) {
+					drive.setTargetInches(CONTINUAL_DRIVE, -CONTINUAL_DRIVE);
+					//System.out.println("within backwards state");
+				}
+			}
 		}
+		
 		currentState.run();
 		if (currentCondition.check()){
 			currentState.stop();
@@ -94,6 +115,11 @@ public class AutoController {
 			currentVariable = null;
 		}
 		
+	}
+	
+	public void resetState()
+	{
+		state = INITIAL;
 	}
 	
 	//Drives Straight	*O*
@@ -120,54 +146,61 @@ public class AutoController {
 //	}
 //	
 //	// Drives(backwards) and Places Gear 
-//	public void placeGear (DriveBase drive, GearFlopper gearFlopper, double distanceOffset, double distanceCanOffset, double waitTime)
-//	{
-//		String s;
-//		switch (state)
-//		{
-//			case INITIAL:
-//				s = "initial";
-//				state = State.TURN;
-//				break;
-//			case TURN:
-//				s = "turn";
-//				if (Math.abs(distanceOffset) > distanceCanOffset) {
-//					if (distanceOffset < 0) {
-//						drive.turnLeft(0.2);
-//					} else {
-//						drive.turnRight(0.2);
-//					}
-//				} else {
-//					state = State.DRIVE_FORWARD;
-//				}
-//				break;
-//			case DRIVE_FORWARD:
-//				s = "drive forward";
-//				drive.driveStraight();
-//				if (gearFlopper.springActivated())
-//				{
-//					state = State.PLACE_GEAR;
-//				}
-//				break;
-//			case PLACE_GEAR:
-//				s = "place gear";
-//				if (gearFlopper.gearIsPresent() == false) 
-//				{
-//					gearFlopper.retractGearFlopper(2000L);
-//					state = State.DO_NOTHING;
-//				}
-//				else 
-//				{
-//					gearFlopper.ejectGear();
-//				}
-//			case DO_NOTHING:
-//			default:
-//				s = "do nothing";
-//				drive.setSpeed(0.0, 0.0);
-//				gearFlopper.retractGearFlopper(2000L);
-//
-//		}
-//		SmartDashboard.putString("auto state oogabooga where da souls at", s);
-//	}
+	public void placeGear (DriveBase drive, GearFlopper gearFlopper, double distanceOffset)
+	{
+		String s = "-----";
+		switch (state)
+		{
+			case INITIAL:
+				s = "initial";
+				state = FOLLOWING;
+				drive.resetEncoders();
+				break;
+				
+			case FOLLOWING:
+			{
+				if(gearFlopper.springActivated()){
+					state = PLACE_GEAR;
+					drive.setSpeed(0, 0);
+					break;
+				}
+				
+				s = "following";
+				double leftTarget = 50 + distanceOffset;
+				double rightTarget = 50 - distanceOffset;
+				drive.setTargetInches(rightTarget, leftTarget);
+				drive.tankCorrectedDrive(drive.getLeftWheelDistance(), drive.getRightWheelDistance());
+			}
+				break;
+				
+			case PLACE_GEAR:
+				s = "place gear";
+				if (gearFlopper.gearIsPresent() == false) 
+				{
+					gearFlopper.retractGearFlopper();
+					drive.resetEncoders();
+					drive.setTargetInches(-24, -24);
+					state = BACK_OFF;
+				}
+				else 
+				{
+					gearFlopper.ejectGear();
+				}
+				break;
+				
+			case BACK_OFF:
+				s = "back off";
+				drive.tankCorrectedDrive(drive.getLeftWheelDistance(), drive.getRightWheelDistance());
+				if(Math.abs(drive.getLeftWheelDistance() - drive.getLeftTarget()) < 2.0){
+					state = NOTHING;
+				}
+				break;
+				
+			default:
+				s = "GEAR PLACED";
+				drive.setSpeed(0.0, 0.0);
+				break;
+		}
+	}
 	
 }

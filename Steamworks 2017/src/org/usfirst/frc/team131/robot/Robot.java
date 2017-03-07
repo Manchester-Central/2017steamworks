@@ -25,6 +25,8 @@ public class Robot extends IterativeRobot {
 //	final String placeGear = "place gear";
 //	String autoSelected;
 //	SendableChooser<String> chooser = new SendableChooser<>();
+	
+	
 	Relay cameraLED;
 	Climber climber;
 	ControllerOverseer CO;
@@ -32,8 +34,7 @@ public class Robot extends IterativeRobot {
 	BallIntakeShooter shumper;
 	Compressor compressor;
 	GearFlopper gearFlopper;
-	
-	double offset;
+	NetworkTable table;
 	
 	boolean compressorIsManuallyStopped;
 	
@@ -52,7 +53,10 @@ public class Robot extends IterativeRobot {
 		shumper = new BallIntakeShooter ();
 		gearFlopper = new GearFlopper();		
 		gearFlopper.retractGearFlopper();
-		auto = new AutoController (drive, gearFlopper);
+		auto = new AutoController (drive  ,gearFlopper, shumper);
+		table = NetworkTable.getTable("camera");
+		
+		
 //		chooser.addDefault("Default Auto", defaultAuto);
 //		chooser.addObject("My Auto", customAuto);
 //		chooser.addObject("drive forward", driveForward);
@@ -60,7 +64,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putData("Auto choices", chooser);
 		drive.resetEncoders();
 		auto.setUpDashboard();
-		compressor.start();
+		//compressor.start();
 	}
 	
 
@@ -96,6 +100,12 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		
 		drive.displayDriveBaseStats();
+
+		if (gearFlopper.springActivated()) { 
+			gearFlopper.ejectGear(); 
+		} else {
+			//gearFlopper.retractGearFlopper();
+		}
 	
 		auto.run();
 //		switch (autoSelected) {
@@ -148,20 +158,34 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit()
 	{
+		gearFlopper.retractGearFlopper();
+		drive.resetEncoders();
 	}
 	
 	public void teleopPeriodic()
 	{
+		
 		drive.displayDriveBaseStats();
+		double offset = table.getNumber("displacement", Double.POSITIVE_INFINITY);
+		SmartDashboard.putNumber("offset", offset);
+//		SmartDashboard.putNumber("height", table.getNumber("height", Double.POSITIVE_INFINITY));
+//		SmartDashboard.putNumber("size", table.getNumber("size", Double.POSITIVE_INFINITY));
 		// puts the offset to the dashboard
-		//SmartDashboard.putNumber("offset", offset);
 		
 		// auto places the gear
-		if (CO.driver.buttonPressed(Controller.RIGHT_TRIGGER)) {
-			drive.resetEncoders();
-			//auto.placeGear(drive, gearFlopper, offset, 30.0, 0.0);
+		boolean autoPlacingGear = CO.driver.buttonPressed(Controller.RIGHT_TRIGGER) && offset != Double.POSITIVE_INFINITY;
+		if (autoPlacingGear) {
+			auto.placeGear(drive, gearFlopper, offset);
 		}
-		cameraLED.set(Relay.Value.kForward);
+		else {
+			auto.resetState();
+			
+			// sets drive speed
+			drive.setSpeed(-CO.driver.getLeftY(), -CO.driver.getRightY());
+		}
+		
+		
+		//cameraLED.set(Relay.Value.kForward);
 		// for the physiognomy transmogufier		//the light
 	    if (CO.operator.buttonPressed(Controller.LEFT_X_ABXY)) {
 	    	cameraLED.set(Relay.Value.kForward);
@@ -184,17 +208,25 @@ public class Robot extends IterativeRobot {
 		} else {
 			shumper.stop();
 		}
-		// sets drive speed
-		drive.setSpeed(CO.driver.getLeftY(), CO.driver.getRightY());
+		
+		
+		
 		
 		//sets climber speed
-		climber.setClimberSpeed(CO.operator.getLeftY());
+		climber.setClimberSpeed(Math.abs(CO.operator.getLeftY()));
 		
 		//ejects gear 		// Uses the spring sensor to auto place gear
-		if (gearFlopper.springActivated() == true || CO.operator.buttonPressed(Controller.LEFT_TRIGGER)) {
+		
+		// TODO the operator can potentially override the driver
+		if ((CO.operator.buttonPressed(Controller.LEFT_BUMPER) || CO.driver.buttonPressed(Controller.RIGHT_BUMPER)) && gearFlopper.springActivated()) {
+			if (gearFlopper.springActivated()) { 
+				gearFlopper.ejectGear(); 
+			}	
+		}
+		else if (CO.operator.buttonPressed(Controller.LEFT_TRIGGER)) {
 			gearFlopper.ejectGear();
-		} else {
-			gearFlopper.retractGearFlopper();
+		} else if (!autoPlacingGear){
+			gearFlopper.retractGearFlopper(); // TODO aurangzeb says this works
 		}
 		
 		//cover positioning
@@ -205,7 +237,6 @@ public class Robot extends IterativeRobot {
 			//sheaths cover
 			gearFlopper.coverSet(DoubleSolenoid.Value.kReverse);
 		} else {
-			//
 			if (gearFlopper.gearIsPresent() == true) {
 				gearFlopper.coverSet(DoubleSolenoid.Value.kForward);
 			} else {
@@ -213,12 +244,12 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		
-		if (CO.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
-			drive.followLight();
-		}
+//		if (CO.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+//			//drive.followLight();
+//		}
 		
-		//SmartDashboard.putString("Light Sensor Big Zambonie", Boolean.toString(gearFlopper.gearIsPresent()));
-		//SmartDashboard.putString("Light Sensor Small Zambonie", Boolean.toString(gearFlopper.springActivated()));
+		SmartDashboard.putString("Gear present", Boolean.toString(gearFlopper.gearIsPresent()));
+		SmartDashboard.putString("Spring activated", Boolean.toString(gearFlopper.springActivated()));
 
 		
 		// toggles the compressor
@@ -234,8 +265,8 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void disabledPeriodic () {
-		SmartDashboard.putString("Gear In", Boolean.toString(gearFlopper.gearIsPresent()));
-		SmartDashboard.putString("Spring In", Boolean.toString(gearFlopper.springActivated()));
+//		SmartDashboard.putString("Gear In", Boolean.toString(gearFlopper.gearIsPresent()));
+//		SmartDashboard.putString("Spring In", Boolean.toString(gearFlopper.springActivated()));
 		drive.displayDriveBaseStats();
 		
 	}

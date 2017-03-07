@@ -13,8 +13,8 @@ public class Climber {
 		speedController1 = new Victor(PortConstants.CLIMBER_PORT_ONE);
 		speedController2 = new Victor(PortConstants.CLIMBER_PORT_TWO);	
 
-		speedController1.setInverted(false);
-		speedController2.setInverted(false);
+		speedController1.setInverted(true);
+		speedController2.setInverted(true);
 	}
 	
 	// sets climber speed
