@@ -28,21 +28,21 @@ public interface PortConstants {
 	int LEFT_BACK_TALON		   	 	        = isRaftMode ? -1  :  16;
 
 	int FRONT_SPARK_PORT				       = isRaftMode ? 6 :  3;
-	int BACK_SPARK_PORT				       = isRaftMode ? 7 :  2;
-	int TOP_SPARK_PORT				       = isRaftMode ? 8 :  1;
+	int BACK_SPARK_PORT				      	   = isRaftMode ? 7 :  2;
+	int TOP_SPARK_PORT				           = isRaftMode ? 8 :  1;
 	int AGITATOR_SPARK_PORT			           = isRaftMode ? 9 :  0;
 	
 	int SRX_TALON_ONE_PORT				      = isRaftMode ?  3 :  3;
 	
-	int CLIMBER_PORT_ONE                      = isRaftMode ? 5  :  4;
-	int CLIMBER_PORT_TWO                      = isRaftMode ? 5  :  5;
+	int CLIMBER_PORT_ONE                      = isRaftMode ?  5 :  4;
+	int CLIMBER_PORT_TWO                      = isRaftMode ?  5 :  5;
 	
 	// digital constants
-	int RIGHT_ENCODER_PORT_A                 = isRaftMode ? -1  :  1;
-	int RIGHT_ENCODER_PORT_B                 = isRaftMode ? -1  :  0;
+	int LEFT_ENCODER_PORT_A                 = isRaftMode ?   4 :  1;
+	int LEFT_ENCODER_PORT_B                 = isRaftMode ?   5 :  0;
 	
-	int LEFT_ENCODER_PORT_A                   = isRaftMode ? 2  :  3;
-	int LEFT_ENCODER_PORT_B                   = isRaftMode ? 3  :  2;
+	int RIGHT_ENCODER_PORT_A                   = isRaftMode ? 2  :  3;
+	int RIGHT_ENCODER_PORT_B                   = isRaftMode ? 3  :  2;
 	
 	int GEAR_SENSOR		                      = isRaftMode ? 4  :  4;
 	int SPRING_SENSOR 		       	          = isRaftMode ? 5  :  5;

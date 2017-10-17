@@ -21,9 +21,13 @@ public class GearFlopper {
 	DigitalInput gearIn;
 	DigitalInput springIn;
 	
+	boolean isEjecting;
+	
 	boolean isEjected;
 	
 	public GearFlopper ()  {
+		isEjecting = false;
+		
 		isEjected = false;
 		
 		gearIn = new DigitalInput(PortConstants.GEAR_SENSOR);
@@ -63,32 +67,36 @@ public class GearFlopper {
 		return gearPusher.get();
 	}
 	
-
+	public boolean checkIfEjected () {
+		return isEjected;
+	}
 	
 	long firstTime = 0L;
 	
 	// delay is milliseconds	
 	public void ejectGear () {
 		Date time = new Date ();
-		if (isEjected == false) {
-			isEjected = true;
+		if (isEjecting == false) {
+			isEjecting = true;
+			isEjected = false;
 			firstTime = time.getTime();
 		}
 		doorSet (DoubleSolenoid.Value.kForward);
 		//isEjected = true;
-		if (firstTime + 1250 < time.getTime()) {
+		if (firstTime + 1500 < time.getTime()) {
 			gearPusherSet (DoubleSolenoid.Value.kReverse);			
 		}
 		else if (firstTime + 250 < time.getTime()){
 			gearPusherSet (DoubleSolenoid.Value.kForward);
+			isEjected = true;
 		}
 
 	}
 	// delay is milliseconds
 	public void retractGearFlopper () {
 		Date time = new Date ();
-		if (isEjected == true) {
-			isEjected = false;
+		if (isEjecting == true) {
+			isEjecting = false;
 			firstTime = time.getTime();
 		}
 		gearPusherSet (DoubleSolenoid.Value.kReverse);
@@ -106,5 +114,3 @@ public class GearFlopper {
 	}
 	
 }
-
-
